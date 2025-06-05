@@ -44,9 +44,9 @@ The library supports various UI elements, each with specific parameters and func
 local Library = VicLib
 
 -- Create tabs
-local MainTab = Library.__init():create_tab("Main")
-local SettingsTab = Library.__init():create_tab("Settings")
-local VisualsTab = Library.__init():create_tab("Visuals")
+local MainTab = Library:create_tab("Main")
+local SettingsTab = Library:create_tab("Settings")
+local VisualsTab = Library:create_tab("Visuals")
 
 -- Example 1: Toggle
 MainTab:create_toggle({
@@ -344,9 +344,9 @@ For a more complex use case, here's an example of a UI for a game with combat, m
 local Library = VicLib
 
 -- Create tabs
-local CombatTab = Library.__init():create_tab("Combat")
-local MovementTab = Library.__init():create_tab("Movement")
-local VisualsTab = Library.__init():create_tab("Visuals")
+local CombatTab = Library:create_tab("Combat")
+local MovementTab = Library:create_tab("Movement")
+local VisualsTab = Library:create_tab("Visuals")
 
 -- Combat Tab
 CombatTab:create_title({
