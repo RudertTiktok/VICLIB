@@ -19,13 +19,12 @@ local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rudert
 The library uses a tab-based structure with left and right sections for organizing UI elements. You initialize the library and create tabs using the `__init()` and `create_tab` functions. Here's a complete example:
 
 ```lua
--- Initialize the library
-local Library = VicLib
 
+local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/LIBRARYUI"))().__init
 -- Create tabs
-local MainTab = Library:create_tab("Main")
-local SettingsTab = Library:create_tab("Settings")
-local VisualsTab = Library:create_tab("Visuals")
+local MainTab = VicLib:create_tab("Main")
+local SettingsTab = VicLib:create_tab("Settings")
+local VisualsTab = VicLib:create_tab("Visuals")
 
 -- Example: Adding UI elements to tabs (detailed below)
 ```
