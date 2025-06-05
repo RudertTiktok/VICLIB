@@ -41,12 +41,11 @@ The library supports various UI elements, each with specific parameters and func
 #### **Complete Example**
 ```lua
 -- Initialize the library
-local Library = VicLib
-
+-- Must be wind ahh 🥀
 -- Create tabs
-local MainTab = Library:create_tab("Main")
-local SettingsTab = Library:create_tab("Settings")
-local VisualsTab = Library:create_tab("Visuals")
+local MainTab = VicLib:create_tab("Main")
+local SettingsTab = VicLib:create_tab("Settings")
+local VisualsTab = VicLib:create_tab("Visuals")
 
 -- Example 1: Toggle
 MainTab:create_toggle({
@@ -341,12 +340,13 @@ MainTab:create_image({
 For a more complex use case, here's an example of a UI for a game with combat, movement, and visual features:
 
 ```lua
-local Library = VicLib
+
+local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/LIBRARYUI"))().__init
 
 -- Create tabs
-local CombatTab = Library:create_tab("Combat")
-local MovementTab = Library:create_tab("Movement")
-local VisualsTab = Library:create_tab("Visuals")
+local CombatTab = VicLib:create_tab("Combat")
+local MovementTab = VicLib:create_tab("Movement")
+local VisualsTab = VicLib:create_tab("Visuals")
 
 -- Combat Tab
 CombatTab:create_title({
