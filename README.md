@@ -1,4 +1,4 @@
-```markdown
+markdown
 # VicNotify Usage
 
 VicNotify is a Roblox Lua notification library for creating customizable notifications (`error`, `info`, `message`, `success`, `warning`).
