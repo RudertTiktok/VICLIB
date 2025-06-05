@@ -632,7 +632,7 @@ end)
 		end
 	end
 
-    function Tab:create_tab()
+    function Tab:create_tab(name)
         local tab = Instance.new("TextButton")
 		tab.Name = "Tab"
 		tab.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
