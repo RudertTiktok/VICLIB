@@ -8,7 +8,7 @@
 To use the library, you need to load it into your Roblox script using `loadstring` and `game:HttpGet`. Here's how to do it:
 
 ```lua
-local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/LIBRARYUI"))()
+local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/LIBRARYUI"))().__init
 ```
 
 - **Note**: Replace the URL (`https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/LIBRARYUI`) with the actual URL where your library is hosted.
@@ -23,9 +23,9 @@ The library uses a tab-based structure with left and right sections for organizi
 local Library = VicLib
 
 -- Create tabs
-local MainTab = Library.__init():create_tab("Main")
-local SettingsTab = Library.__init():create_tab("Settings")
-local VisualsTab = Library.__init():create_tab("Visuals")
+local MainTab = Library:create_tab("Main")
+local SettingsTab = Library:create_tab("Settings")
+local VisualsTab = Library:create_tab("Visuals")
 
 -- Example: Adding UI elements to tabs (detailed below)
 ```
