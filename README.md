@@ -1,5 +1,72 @@
 ---
 
+```markdown
+# VicNotify Usage
+
+VicNotify is a Roblox Lua notification library for creating customizable notifications (`error`, `info`, `message`, `success`, `warning`).
+
+## Installation
+Load the library in your Roblox script:
+
+```lua
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/VICNOTIFY", true))()
+```
+
+**Note**: Ensure the URL is valid. Host locally if inaccessible.
+
+## Creating a Notification
+Use `Notification.new` to create a notification:
+
+```lua
+Notification.new(type, heading, body, autoRemove, autoRemoveTime, onCloseFunction)
+```
+
+- `type` (string): `error`, `info`, `message`, `success`, or `warning`.
+- `heading` (string): Notification title.
+- `body` (string): Notification message.
+- `autoRemove` (boolean, optional): Auto-close after `autoRemoveTime` (default: false).
+- `autoRemoveTime` (number, optional): Seconds before auto-close (default: 5).
+- `onCloseFunction` (function, optional): Callback when notification closes.
+
+**Example**:
+```lua
+Notification.new("error", "Error", "Something went wrong!", true, 3)
+Notification.new("success", "Success", "Task done.", true, 4)
+Notification.new("info", "Info", "Test message.")
+Notification.new("warning", "Warning", "Be cautious.", true, 5)
+Notification.new("message", "Message", "Hello!", true, 4, function() print("Closed!") end)
+```
+
+## Modifying Notifications
+Notifications return an object with these methods:
+
+- `changeHeading(newHeading)`: Update title.
+- `changeBody(newBody)`: Update message (auto-resizes).
+- `changeColor(primary, secondary, textColor)`: Change colors (Color3 values).
+- `deleteTimeout(waitTime)`: Close after delay (default: 3 seconds).
+- `delete()`: Close immediately.
+
+**Example**:
+```lua
+local notif = Notification.new("success", "Success", "Task completed.")
+notif:changeHeading("New Title")
+notif:changeBody("Updated message with resizing.")
+notif:changeColor(Color3.fromRGB(200, 200, 200), Color3.fromRGB(100, 100, 100), Color3.fromRGB(255, 255, 255))
+notif:deleteTimeout(2) -- Closes after 2 seconds
+-- notif:delete() -- Closes immediately
+```
+```
+
+### Notes
+- **Concise Focus**: Only includes installation and usage (creating/modifying notifications), omitting troubleshooting, features, or other details as requested.
+- **URL**: Uses the provided URL. Replace with your actual repository URL if different.
+- **Examples**: Mirrors the structure of your example code, showing all notification types and modification methods.
+- **Dynamic Resizing**: Noted in `changeBody` to reflect the updated code’s feature.
+
+Let me know if you need further adjustments or a different format!
+
+---
+
 ## **How to Use the VicLib UI Library**
 
 This guide explains how to use the `VicLib` UI library to create a customizable graphical user interface (GUI) in Roblox. The library supports tabs, toggles, buttons, sliders, dropdowns, textboxes, keybinds, images, and more, with animations and persistent state saving. The structure is designed to be beginner-friendly, with clear examples and explanations to help anyone use the library effectively.
