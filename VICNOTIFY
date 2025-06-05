@@ -1,30 +1,36 @@
-_G.JxereasExistingHooks = _G.JxereasExistingHooks or {}
-if not _G.JxereasExistingHooks.GuiDetectionBypass then
-    local CoreGui = game.CoreGui
-    local ContentProvider = game.ContentProvider
+_G.VicExistingHooks = _G.VicExistingHooks or {}
+if not _G.VicExistingHooks.GuiDetectionBypass then
+    local CoreGui = game:GetService("CoreGui")
+    local ContentProvider = game:GetService("ContentProvider")
+    local Players = game:GetService("Players")
     local RobloxGuis = {"RobloxGui", "TeleportGui", "RobloxPromptGui", "RobloxLoadingGui", "PlayerList", "RobloxNetworkPauseNotification", "PurchasePrompt", "HeadsetDisconnectedDialog", "ThemeProvider", "DevConsoleMaster"}
     
+    local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/VICNOTIFY", true))()
+
     local function FilterTable(tbl)
-        local context = syn_context_get()
-        syn_context_set(7)
+        local context
+        if typeof(syn_context_get) == "function" and typeof(syn_context_set) == "function" then
+            context = syn_context_get()
+            syn_context_set(7)
+        else
+            Notification.new("warning", "Warning", "Synapse X context functions not found. GUI detection bypass may fail.")
+        end
         local new = {}
-        for i,v in ipairs(tbl) do --roblox iterates the array part
+        for i, v in ipairs(tbl) do
             if typeof(v) ~= "Instance" then
                 table.insert(new, v)
             else
                 if v == CoreGui or v == game then
-                    --insert only the default roblox guis
-                    for i,v in pairs(RobloxGuis) do
-                        local gui = CoreGui:FindFirstChild(v)
+                    for i, guiName in pairs(RobloxGuis) do
+                        local gui = CoreGui:FindFirstChild(guiName)
                         if gui then
                             table.insert(new, gui)
                         end
                     end
-    
                     if v == game then
-                        for i,v in pairs(game:GetChildren()) do
-                            if v ~= CoreGui then
-                                table.insert(new, v)
+                        for i, child in pairs(game:GetChildren()) do
+                            if child ~= CoreGui then
+                                table.insert(new, child)
                             end
                         end
                     end
@@ -32,9 +38,8 @@ if not _G.JxereasExistingHooks.GuiDetectionBypass then
                     if not CoreGui:IsAncestorOf(v) then
                         table.insert(new, v)
                     else
-                        --don't insert it if it's a descendant of a different gui than default roblox guis
-                        for j,k in pairs(RobloxGuis) do
-                            local gui = CoreGui:FindFirstChild(k)
+                        for j, guiName in pairs(RobloxGuis) do
+                            local gui = CoreGui:FindFirstChild(guiName)
                             if gui then
                                 if v == gui or gui:IsAncestorOf(v) then
                                     table.insert(new, v)
@@ -46,63 +51,66 @@ if not _G.JxereasExistingHooks.GuiDetectionBypass then
                 end
             end
         end
-        syn_context_set(context)
+        if context then
+            syn_context_set(context)
+        end
         return new
     end
     
-    local old
-    old = hookfunc(ContentProvider.PreloadAsync, function(self, tbl, cb)
-        if self ~= ContentProvider or type(tbl) ~= "table" or type(cb) ~= "function" then --note: callback can be nil but in that case it's useless anyways
-            return old(self, tbl, cb)
+    local oldPreload
+    oldPreload = hookfunc(ContentProvider.PreloadAsync, function(self, tbl, cb)
+        if self ~= ContentProvider or type(tbl) ~= "table" or type(cb) ~= "function" then
+            return oldPreload(self, tbl, cb)
         end
     
-        --check for any errors that I might've missed (such as table being {[2] = "something"} which causes "Unable to cast to Array")
         local err
-        task.spawn(function() --TIL pcalling a C yield function inside a C yield function is a bad idea ("cannot resume non-suspended coroutine")
-            local s,e = pcall(old, self, tbl)
+        task.spawn(function()
+            local s, e = pcall(oldPreload, self, tbl)
             if not s and e then
                 err = e
+                Notification.new("error", "Hook Error", "PreloadAsync hook failed: " .. tostring(e))
             end
         end)
        
         if err then
-            return old(self, tbl) --don't pass the callback, just in case
+            return oldPreload(self, tbl)
         end
     
         tbl = FilterTable(tbl)
-        return old(self, tbl, cb)
+        return oldPreload(self, tbl, cb)
     end)
     
-    local old
-    old = hookmetamethod(game, "__namecall", function(self, ...)
+    local oldNamecall
+    oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
         local method = getnamecallmethod()
         if self == ContentProvider and (method == "PreloadAsync" or method == "preloadAsync") then
             local args = {...}
             if type(args[1]) ~= "table" or type(args[2]) ~= "function" then
-                return old(self, ...)
+                return oldNamecall(self, ...)
             end
     
             local err
             task.spawn(function()
-                setnamecallmethod(method) --different thread, different namecall method
-                local s,e = pcall(old, self, args[1])
+                setnamecallmethod(method)
+                local s, e = pcall(oldNamecall, self, args[1])
                 if not s and e then
                     err = e
+                    Notification.new("error", "Hook Error", "Namecall hook failed: " .. tostring(e))
                 end
             end)
     
             if err then
-                return old(self, args[1])
+                return oldNamecall(self, args[1])
             end
     
             args[1] = FilterTable(args[1])
             setnamecallmethod(method)
-            return old(self, args[1], args[2])
+            return oldNamecall(self, args[1], args[2])
         end
-        return old(self, ...)
+        return oldNamecall(self, ...)
     end)
     
-    _G.JxereasExistingHooks.GuiDetectionBypass = true
+    _G.VicExistingHooks.GuiDetectionBypass = true
 end
 
 local Notification = {}
@@ -111,6 +119,7 @@ Notification.__index = Notification
 local ts = game:GetService("TweenService")
 local ss = game:GetService("SoundService")
 local txtS = game:GetService("TextService")
+local Players = game:GetService("Players")
 
 local openSound = Instance.new("Sound")
 local closeSound = Instance.new("Sound")
@@ -178,21 +187,39 @@ local warningBodyText = Instance.new("TextLabel")
 local warningCornerHidingFrame = Instance.new("Frame")
 local warningCloseButton = Instance.new("ImageButton")
 
-local previousUiExists = game:GetService("CoreGui"):FindFirstChild("notifications")
+local function getParentGui()
+    local success, result = pcall(function()
+        return game:GetService("CoreGui")
+    end)
+    if success then
+        return result
+    else
+        Notification.new("warning", "CoreGui Access Failed", "Falling back to PlayerGui.")
+        return Players.LocalPlayer:WaitForChild("PlayerGui")
+    end
+end
+
+local previousUiExists = getParentGui():FindFirstChild("notifications")
 if previousUiExists then previousUiExists:Destroy() end
 
 openSound.Name = "OpenNotifSound"
 openSound.Volume = 1
 openSound.SoundId = "rbxassetid://9128519965"
 openSound.Parent = ss
+pcall(function()
+    game:GetService("ContentProvider"):PreloadAsync({openSound})
+end)
 
 closeSound.Name = "CloseNotifSound"
 closeSound.Volume = 1
 closeSound.SoundId = "rbxassetid://9128519965"
 closeSound.Parent = ss
+pcall(function()
+    game:GetService("ContentProvider"):PreloadAsync({closeSound})
+end)
 
 notifications.Name = "notifications"
-notifications.Parent = game:GetService("CoreGui")
+notifications.Parent = getParentGui()
 notifications.ZIndexBehavior = Enum.ZIndexBehavior.Global
 notifications.ResetOnSpawn = false
 
@@ -391,7 +418,6 @@ infoBodyText.TextSize = 14
 infoBodyText.TextWrapped = true
 infoBodyText.TextXAlignment = Enum.TextXAlignment.Left
 infoBodyText.TextYAlignment = Enum.TextYAlignment.Top
-
 
 infoCornerHidingFrame.Name = "cornerHidingFrame"
 infoCornerHidingFrame.Parent = infoTemplateFrame
@@ -709,9 +735,9 @@ warningCloseButton.Image = "rbxassetid://9127564477"
 warningCloseButton.ImageColor3 = Color3.fromRGB(234, 159, 53)
 
 local function scaleNotifHolderMaxNotifs(): nil
-    local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y/40)
+    local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y / 40)
     local notifsHolderFramePadding = amountOfNotifsInFrame * notifHolderListLayout.Padding.Offset
-    notifsHolderFrame.Size = UDim2.new(.25,0,0,amountOfNotifsInFrame * 40 + notifsHolderFramePadding)
+    notifsHolderFrame.Size = UDim2.new(.25, 0, 0, amountOfNotifsInFrame * 40 + notifsHolderFramePadding)
 end
 
 local function deleteNotifsOutsideFrame(): nil
@@ -735,38 +761,43 @@ function Notification.new(notifType: string, heading: string, body: string, auto
     local notif = notificationTypes[notifType:lower()]
     assert(notif, "Notification type not valid\nValid Types: {\n\tError\n\tInfo\n\tMessage\n\tSuccess\n\tWarning\n}")
     notif = notif:Clone()
-    notif.templateFrame.Position = UDim2.new(1,0,0,0)
+    notif.templateFrame.Position = UDim2.new(1, 0, 0, 0)
 
     local function checkTextSize()
         local infoFrame = notif.templateFrame.informationFrame
-        local requiredHeadingSize = txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000,10000)).X 
-        local requiredBodySize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(10000,10000)).X   
-        if requiredHeadingSize + 45 + 25 > notifsHolderFrame.AbsoluteSize.X then
+        local requiredHeadingSize = txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).Y
+        local requiredBodySize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(notifsHolderFrame.AbsoluteSize.X - 70, 10000)).Y
+        local totalHeight = requiredHeadingSize + requiredBodySize + 10
+        if totalHeight > 40 then
+            notif.Size = UDim2.new(1, 0, 0, totalHeight)
+            notif.templateFrame.Size = UDim2.new(1, 0, 1, 0)
+        end
+        if txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).X + 70 > notifsHolderFrame.AbsoluteSize.X then
             warn("Heading size is too long (Notification Library)")
         end
-        if requiredBodySize + 45 + 25 > notifsHolderFrame.AbsoluteSize.X then
+        if txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(10000, 10000)).X + 70 > notifsHolderFrame.AbsoluteSize.X then
             warn("Body size is too long (Notification Library)")
         end
     end
 
     local function openNotif(): nil
         local function playOpenNotifTween(): nil
-            ts:Create(notif.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(0,0,0,0)}):Play()
+            ts:Create(notif.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(0, 0, 0, 0)}):Play()
         end
 
-        openSound:Play()
+        pcall(function() openSound:Play() end)
         playOpenNotifTween()
     end
 
     local function closeNotif(): nil
         coroutine.wrap(function()
             local function playCloseNotifTween(): nil
-                local closeTween = ts:Create(notif.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1,0,0,0)})
+                local closeTween = ts:Create(notif.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1, 0, 0, 0)})
                 closeTween:Play()
                 closeTween.Completed:Wait()
             end
             
-            closeSound:Play()
+            pcall(function() closeSound:Play() end)
             if callback then callback() end
             playCloseNotifTween()
             notif:Destroy()
@@ -795,6 +826,7 @@ function Notification.new(notifType: string, heading: string, body: string, auto
     newNotif.Heading = heading
     newNotif.Body = body
     newNotif.Type = notifType:lower()
+    newNotif.IsClosing = false
 
     return newNotif
 end
@@ -803,6 +835,7 @@ function Notification:changeHeading(newHeading: string): nil
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
         self.Instance.templateFrame.informationFrame.headingText.Text = newHeading
+        self.Heading = newHeading
     end)()
 end
 
@@ -810,31 +843,47 @@ function Notification:changeBody(newBody: string): nil
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
         self.Instance.templateFrame.informationFrame.bodyText.Text = newBody
+        self.Body = newBody
+        local requiredBodySize = txtS:GetTextSize(newBody, self.Instance.templateFrame.informationFrame.bodyText.TextSize, self.Instance.templateFrame.informationFrame.bodyText.Font, Vector2.new(notifsHolderFrame.AbsoluteSize.X - 70, 10000)).Y
+        local requiredHeadingSize = txtS:GetTextSize(self.Instance.templateFrame.informationFrame.headingText.Text, self.Instance.templateFrame.informationFrame.headingText.TextSize, self.Instance.templateFrame.informationFrame.headingText.Font, Vector2.new(10000, 10000)).Y
+        local totalHeight = requiredHeadingSize + requiredBodySize + 10
+        if totalHeight > 40 then
+            self.Instance.Size = UDim2.new(1, 0, 0, totalHeight)
+            self.Instance.templateFrame.Size = UDim2.new(1, 0, 1, 0)
+        end
     end)()
 end
 
 function Notification:deleteTimeout(waitTime: number): nil
+    if self.IsClosing then return end
+    self.IsClosing = true
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
-        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1,0,0,0)})
+        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1, 0, 0, 0)})
         waitTime = waitTime or 3
         task.wait(waitTime)
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
+        pcall(function() closeSound:Play() end)
         closeTween:Play()
         closeTween.Completed:Wait()
-        if self.Instance then return end
-        self.Instance:Destroy()
+        if self.Instance then
+            self.Instance:Destroy()
+        end
     end)()
 end
 
 function Notification:delete()
+    if self.IsClosing then return end
+    self.IsClosing = true
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
-        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1,0,0,0)})
+        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(.25), {Position = UDim2.new(1, 0, 0, 0)})
+        pcall(function() closeSound:Play() end)
         closeTween:Play()
         closeTween.Completed:Wait()
-        if not self.Instance then return end
-        self.Instance:Destroy()
+        if self.Instance then
+            self.Instance:Destroy()
+        end
     end)()
 end
 
