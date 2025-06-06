@@ -420,8 +420,8 @@ SettingsTab.create_line({
 Here’s a more complex example for a "Blade Ball" GUI, integrating multiple features:
 
 ```lua
-local VicLib = 
-local main = Library.new()
+local VicLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/VicLib.txt'))()
+local main = VicLib.new()
 local tab = main.create_tab('Main')
 
 tab.create_title({
