@@ -1,8 +1,5 @@
---[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
---// library script private
-getgenv().namehub = "Private"
+
+getgenv().namehub = "VicoX"
 local UserInputService = game:GetService('UserInputService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
 local TweenService = game:GetService('TweenService')
