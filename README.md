@@ -420,134 +420,176 @@ SettingsTab.create_line({
 Here’s a more complex example for a "Blade Ball" GUI, integrating multiple features:
 
 ```lua
-local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/VicLib.txt"))().__init
+local VicLib = 
+local main = Library.new()
+local tab = main.create_tab('Main')
 
--- Create tabs
-local CombatTab = VicLib.create_tab("Combat")
-local MovementTab = VicLib.create_tab("Movement")
-local VisualsTab = VicLib.create_tab("Visuals")
-
--- Combat Tab
-CombatTab.create_title({
-    name = "Blade Ball Combat",
-    section = "left"
+tab.create_title({
+	name = 'AutoParry',
+	section = 'left'
 })
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'autoparry',
 
-CombatTab.create_toggle({
-    name = "Auto Parry",
-    section = "left",
-    flag = "auto_parry",
-    enabled = false,
-    callback = function(state)
-        print("Auto Parry: " .. tostring(state))
-        -- Example: Auto-parry logic
-        if state then
-            -- Start auto-parry loop
-        else
-            -- Stop auto-parry loop
-        end
-    end
-})
+	section = 'left',
+	enabled = false,
 
-CombatTab.create_description_toggle({
-    name = "Auto Spam",
-    description = "Spams ball automatically",
-    section = "right",
-    flag = "auto_spam",
-    enabled = false,
-    callback = function(state)
-        print("Auto Spam: " .. tostring(state))
-        -- Example: Auto-spam logic
-    end
+	callback = function(state: boolean)
+		print(`{state}`)
+	end
 })
+tab.create_dropdown({
+	name = 'Direction',
+	flag = 'Direction',
+	section = 'left',
 
-CombatTab.create_slider({
-    name = "Parry Sensitivity",
-    section = "left",
-    flag = "parry_sensitivity",
-    value = 1,
-    minimum_value = 0.1,
-    maximum_value = 5,
-    callback = function(value)
-        print("Parry Sensitivity: " .. value)
-        -- Adjust parry sensitivity
-    end
-})
+	option = 'Custom',
+	options = {'Custom', 'High', 'Random'},
 
-CombatTab.create_dropdown({
-    name = "Ball Curve",
-    section = "right",
-    flag = "ball_curve",
-    option = "Straight",
-    options = {"Straight", "Curved", "Random"},
-    callback = function(selected)
-        print("Ball Curve: " .. selected)
-        -- Adjust ball trajectory
-    end
+	callback = function(value: string)
+		print(value)
+	end
 })
+tab.create_title({
+	name = 'Visualizer',
+	section = 'right'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'visualise',
 
--- Movement Tab
-MovementTab.create_title({
-    name = "Movement Options",
-    section = "left"
-})
+	section = 'right',
+	enabled = false,
 
-MovementTab.create_slider({
-    name = "Walk Speed",
-    section = "left",
-    flag = "walk_speed",
-    value = 16,
-    minimum_value = 16,
-    maximum_value = 100,
-    callback = function(value)
-        print("Walk Speed: " .. value)
-        if game.Players.LocalPlayer.Character then
-            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-        end
-    end
+	callback = function(state: boolean)
+	print(`{state}`)
+	end
 })
+tab.create_title({
+	name = 'HitSound',
+	section = 'left'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'hitsound',
 
-MovementTab.create_keybind({
-    name = "Dash",
-    section = "right",
-    flag = "dash_key",
-    keycode = Enum.KeyCode.Q,
-    callback = function(toggled)
-        print("Dash Toggled: " .. tostring(toggled))
-        -- Example: Dash logic
-        if toggled and game.Players.LocalPlayer.Character then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 100
-        end
-    end
-})
+	section = 'left',
+	enabled = false,
 
--- Visuals Tab
-VisualsTab.create_title({
-    name = "Visual Settings",
-    section = "left"
+	callback = function(state: boolean)
+		print(`{state}`)
+	end
 })
+tab.create_dropdown({
+	name = 'Sound',
+	flag = 'soundpick',
+	section = 'left',
 
-VisualsTab.create_textbox({
-    name = "Custom Tag",
-    section = "left",
-    flag = "custom_tag",
-    value = "Player",
-    callback = function(text)
-        print("Custom Tag: " .. text)
-        game.Players.LocalPlayer.DisplayName = text
-    end
-})
+	option = 'Neverlose',
+	options = {'Click', 'Neverlose', 'Bonk'},
 
-VisualsTab.create_image({
-    section = "right",
-    image = "rbxassetid://123456789" -- Replace with valid image ID
+	callback = function(value: string)
+		print(value)
+	end
 })
+tab.create_title({
+	name = 'AI',
+	section = 'right'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'AI',
 
-VisualsTab.create_verified({
-    title = "Trusted by Blade Ball community",
-    section = "left"
+	section = 'right',
+	enabled = false,
+
+	callback = function(state: boolean)
+    print(`{state}`)
+	end
 })
+tab.create_title({
+	name = 'Spin',
+	section = 'right'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'spin',
+
+	section = 'right',
+	enabled = false,
+
+	callback = function(state: boolean)
+		print(`{state}`)
+	end
+})
+tab.create_slider({
+	name = 'Speed',
+	flag = 'spinspeed',
+
+	section = 'right',
+
+	value = 25,
+	minimum_value = 0,
+	maximum_value = 100,
+
+	callback = function(value: number)
+		print(value)
+	end
+})
+tab.create_title({
+	name = 'Auto Open Crate',
+	section = 'left'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'swordbox',
+
+	section = 'left',
+	enabled = false,
+
+	callback = function(state: boolean)
+		print(`{state}`)
+	end
+})
+tab.create_dropdown({
+	name = 'Crate',
+	flag = 'selectbox',
+	section = 'left',
+
+	option = 'Sword Crate',
+	options = {'Explosion Crate', 'Sword Crate'},
+
+	callback = function(value: string)
+		print(value)
+	end
+})
+tab.create_title({
+	name = 'Auto Rewards',
+	section = 'right'
+})
+tab.create_toggle({
+	name = 'Enabled',
+	flag = 'rewarde',
+
+	section = 'right',
+	enabled = false,
+
+	callback = function(state: boolean)
+		print(`{state}`)
+	end
+})
+tab.create_dropdown({
+	name = 'Rewards',
+	flag = 'selectrewards',
+	section = 'right',
+
+	option = 'Playtime Rewards',
+	options = {'Playtime Rewards', 'Clan Rewards', 'Login Rewards', 'All'},
+
+	callback = function(value: string)
+	    print(value)
+	end
+})
+return library
 ```
-
-### **7. Conclusion**
-`VicLib` is a powerful and user-friendly UI library for Roblox, offering a wide range of elements with animations and state persistence. This guide covers everything you need to create a professional GUI, from loading the library to building complex interfaces. If you need further customization (e.g., adding hover effects, sound feedback, or game-specific features), let me know, and I can provide additional examples!
