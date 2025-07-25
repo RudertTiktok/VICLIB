@@ -6,30 +6,71 @@ local ss = game:GetService("SoundService")
 local txtS = game:GetService("TextService")
 local Players = game:GetService("Players")
 
--- Sound setup
 local openSound = Instance.new("Sound")
-openSound.Name = "OpenNotifSound"
-openSound.Volume = 1
-openSound.SoundId = "rbxassetid://9128519965"
-openSound.Parent = ss
-pcall(function()
-    game:GetService("ContentProvider"):PreloadAsync({openSound})
-end)
-
 local closeSound = Instance.new("Sound")
-closeSound.Name = "CloseNotifSound"
-closeSound.Volume = 1
-closeSound.SoundId = "rbxassetid://9128519965"
-closeSound.Parent = ss
-pcall(function()
-    game:GetService("ContentProvider"):PreloadAsync({closeSound})
-end)
 
--- GUI setup
 local notifications = Instance.new("ScreenGui")
-notifications.Name = "notifications"
-notifications.ZIndexBehavior = Enum.ZIndexBehavior.Global
-notifications.ResetOnSpawn = false
+local notifsHolderFrame = Instance.new("Frame")
+local notifHolderListLayout = Instance.new("UIListLayout")
+local errorTemplate = Instance.new("Frame")
+local errorTemplateFrame = Instance.new("Frame")
+local errorTemplateCorner = Instance.new("UICorner")
+local errorSeverityFrame = Instance.new("Frame")
+local errorSeverityCorner = Instance.new("UICorner")
+local hideErrorSeverityCornerFrame = Instance.new("Frame")
+local errorImage = Instance.new("ImageLabel")
+local errorInformationFrame = Instance.new("Frame")
+local errorHeadingText = Instance.new("TextLabel")
+local errorBodyText = Instance.new("TextLabel")
+local errorCornerHidingFrame = Instance.new("Frame")
+local errorCloseButton = Instance.new("ImageButton")
+local infoTemplate = Instance.new("Frame")
+local infoTemplateFrame = Instance.new("Frame")
+local infoSeverityFrame = Instance.new("Frame")
+local infoSeverityCorner = Instance.new("UICorner")
+local hideInfoSeverityCornerFrame = Instance.new("Frame")
+local infoImage = Instance.new("ImageLabel")
+local infoInformationFrame = Instance.new("Frame")
+local infoHeadingText = Instance.new("TextLabel")
+local infoBodyText = Instance.new("TextLabel")
+local infoCornerHidingFrame = Instance.new("Frame")
+local infoCloseButton = Instance.new("ImageButton")
+local infoTemplateCorner = Instance.new("UICorner")
+local messageTemplate = Instance.new("Frame")
+local messageTemplateFrame = Instance.new("Frame")
+local messageTemplateCorner = Instance.new("UICorner")
+local messageSeverityFrame = Instance.new("Frame")
+local messageSeverityCorner = Instance.new("UICorner")
+local hideMessageSeverityCornerFrame = Instance.new("Frame")
+local messageInformationFrame = Instance.new("Frame")
+local messageHeadingText = Instance.new("TextLabel")
+local messageBodyText = Instance.new("TextLabel")
+local messageCornerHidingFrame = Instance.new("Frame")
+local messageCloseButton = Instance.new("ImageButton")
+local successTemplate = Instance.new("Frame")
+local successTemplateFrame = Instance.new("Frame")
+local successTemplateCorner = Instance.new("UICorner")
+local successSeverityFrame = Instance.new("Frame")
+local successSeverityCorner = Instance.new("UICorner")
+local hideSuccessSeverityCornerFrame = Instance.new("Frame")
+local successImage = Instance.new("ImageLabel")
+local successInformationFrame = Instance.new("Frame")
+local successHeadingText = Instance.new("TextLabel")
+local successBodyText = Instance.new("TextLabel")
+local successCornerHidingFrame = Instance.new("Frame")
+local successCloseButton = Instance.new("ImageButton")
+local warningTemplate = Instance.new("Frame")
+local warningTemplateFrame = Instance.new("Frame")
+local warningTemplateCorner = Instance.new("UICorner")
+local warningSeverityFrame = Instance.new("Frame")
+local warningSeverityCorner = Instance.new("UICorner")
+local hideWarningSeverityCornerFrame = Instance.new("Frame")
+local warningImage = Instance.new("ImageLabel")
+local warningInformationFrame = Instance.new("Frame")
+local warningHeadingText = Instance.new("TextLabel")
+local warningBodyText = Instance.new("TextLabel")
+local warningCornerHidingFrame = Instance.new("Frame")
+local warningCloseButton = Instance.new("ImageButton")
 
 local function getParentGui()
     local success, result = pcall(function()
@@ -42,12 +83,31 @@ local function getParentGui()
         return Players.LocalPlayer:WaitForChild("PlayerGui")
     end
 end
-notifications.Parent = getParentGui()
 
-local previousUiExists = notifications.Parent:FindFirstChild("notifications")
+local previousUiExists = getParentGui():FindFirstChild("notifications")
 if previousUiExists then previousUiExists:Destroy() end
 
-local notifsHolderFrame = Instance.new("Frame")
+openSound.Name = "OpenNotifSound"
+openSound.Volume = 25
+openSound.SoundId = "rbxassetid://9128519965"
+openSound.Parent = ss
+pcall(function()
+    game:GetService("ContentProvider"):PreloadAsync({openSound})
+end)
+
+closeSound.Name = "CloseNotifSound"
+closeSound.Volume = 25
+closeSound.SoundId = "rbxassetid://9128519965"
+closeSound.Parent = ss
+pcall(function()
+    game:GetService("ContentProvider"):PreloadAsync({closeSound})
+end)
+
+notifications.Name = "notifications"
+notifications.Parent = getParentGui()
+notifications.ZIndexBehavior = Enum.ZIndexBehavior.Global
+notifications.ResetOnSpawn = false
+
 notifsHolderFrame.Name = "notifsHolderFrame"
 notifsHolderFrame.Parent = notifications
 notifsHolderFrame.AnchorPoint = Vector2.new(1, 0) -- Changed to top-right
@@ -58,7 +118,6 @@ notifsHolderFrame.ClipsDescendants = true
 notifsHolderFrame.Position = UDim2.new(1, -10, 0, 50) -- Moved up (50 pixels from top)
 notifsHolderFrame.Size = UDim2.fromScale(0.3, 0.4) -- Slightly larger
 
-local notifHolderListLayout = Instance.new("UIListLayout")
 notifHolderListLayout.Name = "notifHolderListLayout"
 notifHolderListLayout.Parent = notifsHolderFrame
 notifHolderListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -66,138 +125,609 @@ notifHolderListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 notifHolderListLayout.VerticalAlignment = Enum.VerticalAlignment.Top -- Changed to top
 notifHolderListLayout.Padding = UDim.new(0, 6)
 
--- Notification templates
-local function createTemplate(name, primaryColor, secondaryColor, imageId)
-    local template = Instance.new("Frame")
-    template.Name = name
-    template.AnchorPoint = Vector2.new(1, 0)
-    template.BackgroundColor3 = primaryColor
-    template.BackgroundTransparency = 1
-    template.Position = UDim2.new(1, 0, 0, 0)
-    template.Size = UDim2.new(1, 0, 0, 50) -- Increased default height
+errorTemplate.Name = "error"
+errorTemplate.AnchorPoint = Vector2.new(1, 0)
+errorTemplate.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
+errorTemplate.BorderSizePixel = 0
+errorTemplate.BackgroundTransparency = 1
+errorTemplate.Position = UDim2.new(1, 0, 0, 0)
+errorTemplate.Size = UDim2.new(1, 0, 0, 50) -- Increased default height
 
-    local templateFrame = Instance.new("Frame")
-    templateFrame.Name = "templateFrame"
-    templateFrame.Parent = template
-    templateFrame.BackgroundColor3 = primaryColor
-    templateFrame.BorderSizePixel = 0
-    templateFrame.Size = UDim2.new(1, 0, 1, 0)
+errorTemplateFrame.Name = "templateFrame"
+errorTemplateFrame.Parent = errorTemplate
+errorTemplateFrame.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
+errorTemplateFrame.BorderSizePixel = 0
+errorTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, primaryColor),
-        ColorSequenceKeypoint.new(1, primaryColor:Lerp(Color3.fromRGB(255, 255, 255), 0.2))
-    })
-    gradient.Rotation = 45
-    gradient.Parent = templateFrame
+local errorGradient = Instance.new("UIGradient")
+errorGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 207, 203)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 207, 203):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+})
+errorGradient.Rotation = 45
+errorGradient.Parent = errorTemplateFrame
 
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 2
-    stroke.Color = secondaryColor
-    stroke.Transparency = 0.3
-    stroke.Parent = templateFrame
+local errorStroke = Instance.new("UIStroke")
+errorStroke.Thickness = 2
+errorStroke.Color = Color3.fromRGB(236, 88, 76)
+errorStroke.Transparency = 0.3
+errorStroke.Parent = errorTemplateFrame
 
-    local templateCorner = Instance.new("UICorner")
-    templateCorner.CornerRadius = UDim.new(0, 8)
-    templateCorner.Parent = templateFrame
+errorTemplateCorner.Name = "templateCorner"
+errorTemplateCorner.CornerRadius = UDim.new(0, 8)
+errorTemplateCorner.Parent = errorTemplateFrame
 
-    local severityFrame = Instance.new("Frame")
-    severityFrame.Name = "severityFrame"
-    severityFrame.Parent = templateFrame
-    severityFrame.BackgroundColor3 = secondaryColor
-    severityFrame.Size = UDim2.new(0, 12, 1, 0)
+errorSeverityFrame.Name = "severityFrame"
+errorSeverityFrame.Parent = errorTemplateFrame
+errorSeverityFrame.BackgroundColor3 = Color3.fromRGB(236, 88, 76)
+errorSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
-    local severityCorner = Instance.new("UICorner")
-    severityCorner.CornerRadius = UDim.new(0, 8)
-    severityCorner.Parent = severityFrame
+errorSeverityCorner.Name = "severityCorner"
+errorSeverityCorner.CornerRadius = UDim.new(0, 8)
+errorSeverityCorner.Parent = errorSeverityFrame
 
-    local hideSeverityCornerFrame = Instance.new("Frame")
-    hideSeverityCornerFrame.Name = "hideSeverityCornerFrame"
-    hideSeverityCornerFrame.Parent = severityFrame
-    hideSeverityCornerFrame.BackgroundColor3 = primaryColor
-    hideSeverityCornerFrame.BorderSizePixel = 0
-    hideSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
-    hideSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
+hideErrorSeverityCornerFrame.Name = "hideSeverityCornerFrame"
+hideErrorSeverityCornerFrame.Parent = errorSeverityFrame
+hideErrorSeverityCornerFrame.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
+hideErrorSeverityCornerFrame.BorderSizePixel = 0
+hideErrorSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
+hideErrorSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
 
-    local image = Instance.new("ImageLabel")
-    image.Name = "image"
-    image.Parent = templateFrame
-    image.AnchorPoint = Vector2.new(0, 0.5)
-    image.BackgroundTransparency = 1
-    image.Position = UDim2.new(0, 20, 0.5, 0)
-    image.Size = UDim2.new(0, 24, 0, 24)
-    image.Image = imageId
-    image.ImageColor3 = secondaryColor
+errorImage.Name = "image"
+errorImage.Parent = errorTemplateFrame
+errorImage.AnchorPoint = Vector2.new(0, 0.5)
+errorImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorImage.BackgroundTransparency = 1
+errorImage.BorderSizePixel = 0
+errorImage.Position = UDim2.new(0, 20, 0.5, 0)
+errorImage.Size = UDim2.new(0, 24, 0, 24)
+errorImage.Image = "rbxassetid://9072920609"
+errorImage.ImageColor3 = Color3.fromRGB(236, 88, 76)
 
-    local informationFrame = Instance.new("Frame")
-    informationFrame.Name = "informationFrame"
-    informationFrame.Parent = templateFrame
-    informationFrame.BackgroundTransparency = 1
-    informationFrame.Position = UDim2.new(0, 50, 0, 5)
-    informationFrame.Size = UDim2.new(1, -80, 1, -10)
+errorInformationFrame.Name = "informationFrame"
+errorInformationFrame.Parent = errorTemplateFrame
+errorInformationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorInformationFrame.BackgroundTransparency = 1
+errorInformationFrame.BorderSizePixel = 0
+errorInformationFrame.Position = UDim2.new(0, 50, 0, 5)
+errorInformationFrame.Size = UDim2.new(1, -80, 1, -10)
 
-    local headingText = Instance.new("TextLabel")
-    headingText.Name = "headingText"
-    headingText.Parent = informationFrame
-    headingText.BackgroundTransparency = 1
-    headingText.ClipsDescendants = true
-    headingText.Size = UDim2.new(1, 0, 0, 24)
-    headingText.Font = Enum.Font.GothamBold
-    headingText.Text = name:upper()
-    headingText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    headingText.TextSize = 16
-    headingText.TextXAlignment = Enum.TextXAlignment.Left
-    headingText.TextYAlignment = Enum.TextYAlignment.Bottom
+errorHeadingText.Name = "headingText"
+errorHeadingText.Parent = errorInformationFrame
+errorHeadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorHeadingText.BackgroundTransparency = 1
+errorHeadingText.BorderSizePixel = 0
+errorHeadingText.ClipsDescendants = true
+errorHeadingText.Size = UDim2.new(1, 0, 0, 24)
+errorHeadingText.Font = Enum.Font.GothamBold
+errorHeadingText.Text = "Error"
+errorHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+errorHeadingText.TextSize = 16
+errorHeadingText.TextXAlignment = Enum.TextXAlignment.Left
+errorHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
 
-    local strokeHeading = Instance.new("UIStroke")
-    strokeHeading.Thickness = 1
-    strokeHeading.Color = secondaryColor
-    strokeHeading.Transparency = 0.5
-    strokeHeading.Parent = headingText
+local errorHeadingStroke = Instance.new("UIStroke")
+errorHeadingStroke.Thickness = 1
+errorHeadingStroke.Color = Color3.fromRGB(236, 88, 76)
+errorHeadingStroke.Transparency = 0.5
+errorHeadingStroke.Parent = errorHeadingText
 
-    local bodyText = Instance.new("TextLabel")
-    bodyText.Name = "bodyText"
-    bodyText.Parent = informationFrame
-    bodyText.BackgroundTransparency = 1
-    bodyText.ClipsDescendants = true
-    bodyText.Position = UDim2.new(0, 0, 0, 26)
-    bodyText.Size = UDim2.new(1, 0, 1, -26)
-    bodyText.Font = Enum.Font.GothamMedium
-    bodyText.Text = name .. " message"
-    bodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    bodyText.TextSize = 14
-    bodyText.TextWrapped = true
-    bodyText.TextXAlignment = Enum.TextXAlignment.Left
-    bodyText.TextYAlignment = Enum.TextYAlignment.Top
+errorBodyText.Name = "bodyText"
+errorBodyText.Parent = errorInformationFrame
+errorBodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorBodyText.BackgroundTransparency = 1
+errorBodyText.BorderSizePixel = 0
+errorBodyText.ClipsDescendants = true
+errorBodyText.Position = UDim2.new(0, 0, 0, 26)
+errorBodyText.Size = UDim2.new(1, 0, 1, -26)
+errorBodyText.Font = Enum.Font.GothamMedium
+errorBodyText.Text = "Error message"
+errorBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
+errorBodyText.TextSize = 14
+errorBodyText.TextWrapped = true
+errorBodyText.TextXAlignment = Enum.TextXAlignment.Left
+errorBodyText.TextYAlignment = Enum.TextYAlignment.Top
 
-    local cornerHidingFrame = Instance.new("Frame")
-    cornerHidingFrame.Name = "cornerHidingFrame"
-    cornerHidingFrame.Parent = templateFrame
-    cornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
-    cornerHidingFrame.BackgroundColor3 = primaryColor
-    cornerHidingFrame.BorderSizePixel = 0
-    cornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
-    cornerHidingFrame.Size = UDim2.new(0.1, 0, 1, 0)
-    cornerHidingFrame.ZIndex = 0
+errorCornerHidingFrame.Name = "cornerHidingFrame"
+errorCornerHidingFrame.Parent = errorTemplateFrame
+errorCornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
+errorCornerHidingFrame.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
+errorCornerHidingFrame.BorderSizePixel = 0
+errorCornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
+errorCornerHidingFrame.Size = UDim2.new(.1, 0, 1, 0)
+errorCornerHidingFrame.ZIndex = 0
 
-    local closeButton = Instance.new("ImageButton")
-    closeButton.Name = "closeButton"
-    closeButton.Parent = templateFrame
-    closeButton.AnchorPoint = Vector2.new(1, 0.5)
-    closeButton.BackgroundTransparency = 1
-    closeButton.Position = UDim2.new(1, -10, 0.5, 0)
-    closeButton.Size = UDim2.new(0, 18, 0, 18)
-    closeButton.Image = "rbxassetid://9127564477"
-    closeButton.ImageColor3 = secondaryColor
+errorCloseButton.Name = "closeButton"
+errorCloseButton.Parent = errorTemplateFrame
+errorCloseButton.AnchorPoint = Vector2.new(1, 0.5)
+errorCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorCloseButton.BackgroundTransparency = 1
+errorCloseButton.BorderSizePixel = 0
+errorCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
+errorCloseButton.Size = UDim2.new(0, 18, 0, 18)
+errorCloseButton.Image = "rbxassetid://9127524477"
+errorCloseButton.ImageColor3 = Color3.fromRGB(236, 88, 76)
 
-    return template
-end
+infoTemplate.Name = "info"
+infoTemplate.AnchorPoint = Vector2.new(1, 0)
+infoTemplate.BackgroundColor3 = Color3.fromRGB(204, 226, 254)
+infoTemplate.BorderSizePixel = 0
+infoTemplate.BackgroundTransparency = 1
+infoTemplate.Position = UDim2.new(1, 0, 0, 0)
+infoTemplate.Size = UDim2.new(1, 0, 0, 50)
 
-local errorTemplate = createTemplate("error", Color3.fromRGB(255, 207, 203), Color3.fromRGB(236, 88, 76), "rbxassetid://9072920609")
-local infoTemplate = createTemplate("info", Color3.fromRGB(204, 226, 254), Color3.fromRGB(50, 131, 226), "rbxassetid://9072944922")
-local messageTemplate = createTemplate("message", Color3.fromRGB(233, 233, 235), Color3.fromRGB(112, 118, 130), "") -- No icon for message
-local successTemplate = createTemplate("success", Color3.fromRGB(196, 247, 221), Color3.fromRGB(50, 195, 125), "rbxassetid://9073052584")
-local warningTemplate = createTemplate("warning", Color3.fromRGB(255, 232, 197), Color3.fromRGB(234, 159, 53), "rbxassetid://9072448788")
+infoTemplateFrame.Name = "templateFrame"
+infoTemplateFrame.Parent = infoTemplate
+infoTemplateFrame.BackgroundColor3 = Color3.fromRGB(204, 226, 254)
+infoTemplateFrame.BorderSizePixel = 0
+infoTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
+
+local infoGradient = Instance.new("UIGradient")
+infoGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(204, 226, 254)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(204, 226, 254):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+})
+infoGradient.Rotation = 45
+infoGradient.Parent = infoTemplateFrame
+
+local infoStroke = Instance.new("UIStroke")
+infoStroke.Thickness = 2
+infoStroke.Color = Color3.fromRGB(50, 131, 226)
+infoStroke.Transparency = 0.3
+infoStroke.Parent = infoTemplateFrame
+
+infoSeverityFrame.Name = "severityFrame"
+infoSeverityFrame.Parent = infoTemplateFrame
+infoSeverityFrame.BackgroundColor3 = Color3.fromRGB(50, 131, 226)
+infoSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
+
+infoSeverityCorner.Name = "severityCorner"
+infoSeverityCorner.CornerRadius = UDim.new(0, 8)
+infoSeverityCorner.Parent = infoSeverityFrame
+
+hideInfoSeverityCornerFrame.Name = "hideSeverityCornerFrame"
+hideInfoSeverityCornerFrame.Parent = infoSeverityFrame
+hideInfoSeverityCornerFrame.BackgroundColor3 = Color3.fromRGB(204, 226, 254)
+hideInfoSeverityCornerFrame.BorderSizePixel = 0
+hideInfoSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
+hideInfoSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
+
+infoImage.Name = "image"
+infoImage.Parent = infoTemplateFrame
+infoImage.AnchorPoint = Vector2.new(0, 0.5)
+infoImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoImage.BackgroundTransparency = 1
+infoImage.BorderSizePixel = 0
+infoImage.Position = UDim2.new(0, 20, 0.5, 0)
+infoImage.Size = UDim2.new(0, 24, 0, 24)
+infoImage.Image = "rbxassetid://9072944922"
+infoImage.ImageColor3 = Color3.fromRGB(50, 131, 226)
+
+infoInformationFrame.Name = "informationFrame"
+infoInformationFrame.Parent = infoTemplateFrame
+infoInformationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoInformationFrame.BackgroundTransparency = 1
+infoInformationFrame.BorderSizePixel = 0
+infoInformationFrame.Position = UDim2.new(0, 50, 0, 5)
+infoInformationFrame.Size = UDim2.new(1, -80, 1, -10)
+
+infoHeadingText.Name = "headingText"
+infoHeadingText.Parent = infoInformationFrame
+infoHeadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoHeadingText.BackgroundTransparency = 1
+infoHeadingText.BorderSizePixel = 0
+infoHeadingText.ClipsDescendants = true
+infoHeadingText.Size = UDim2.new(1, 0, 0, 24)
+infoHeadingText.Font = Enum.Font.GothamBold
+infoHeadingText.Text = "Information"
+infoHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+infoHeadingText.TextSize = 16
+infoHeadingText.TextXAlignment = Enum.TextXAlignment.Left
+infoHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
+
+local infoHeadingStroke = Instance.new("UIStroke")
+infoHeadingStroke.Thickness = 1
+infoHeadingStroke.Color = Color3.fromRGB(50, 131, 226)
+infoHeadingStroke.Transparency = 0.5
+infoHeadingStroke.Parent = infoHeadingText
+
+infoBodyText.Name = "bodyText"
+infoBodyText.Parent = infoInformationFrame
+infoBodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoBodyText.BackgroundTransparency = 1
+infoBodyText.BorderSizePixel = 0
+infoBodyText.ClipsDescendants = true
+infoBodyText.Position = UDim2.new(0, 0, 0, 26)
+infoBodyText.Size = UDim2.new(1, 0, 1, -26)
+infoBodyText.Font = Enum.Font.GothamMedium
+infoBodyText.Text = "Information message"
+infoBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
+infoBodyText.TextSize = 14
+infoBodyText.TextWrapped = true
+infoBodyText.TextXAlignment = Enum.TextXAlignment.Left
+infoBodyText.TextYAlignment = Enum.TextYAlignment.Top
+
+infoCornerHidingFrame.Name = "cornerHidingFrame"
+infoCornerHidingFrame.Parent = infoTemplateFrame
+infoCornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
+infoCornerHidingFrame.BackgroundColor3 = Color3.fromRGB(204, 226, 254)
+infoCornerHidingFrame.BorderSizePixel = 0
+infoCornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
+infoCornerHidingFrame.Size = UDim2.new(.1, 0, 1, 0)
+infoCornerHidingFrame.ZIndex = 0
+
+infoCloseButton.Name = "closeButton"
+infoCloseButton.Parent = infoTemplateFrame
+infoCloseButton.AnchorPoint = Vector2.new(1, 0.5)
+infoCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoCloseButton.BackgroundTransparency = 1
+infoCloseButton.BorderSizePixel = 0
+infoCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
+infoCloseButton.Size = UDim2.new(0, 18, 0, 18)
+infoCloseButton.Image = "rbxassetid://9127564477"
+infoCloseButton.ImageColor3 = Color3.fromRGB(50, 131, 226)
+
+infoTemplateCorner.Name = "templateCorner"
+infoTemplateCorner.CornerRadius = UDim.new(0, 8)
+infoTemplateCorner.Parent = infoTemplateFrame
+
+messageTemplate.Name = "message"
+messageTemplate.AnchorPoint = Vector2.new(1, 0)
+messageTemplate.BackgroundColor3 = Color3.fromRGB(233, 233, 235)
+messageTemplate.BorderSizePixel = 0
+messageTemplate.BackgroundTransparency = 1
+messageTemplate.Position = UDim2.new(1, 0, 0, 0)
+messageTemplate.Size = UDim2.new(1, 0, 0, 50)
+
+messageTemplateFrame.Name = "templateFrame"
+messageTemplateFrame.Parent = messageTemplate
+messageTemplateFrame.BackgroundColor3 = Color3.fromRGB(233, 233, 235)
+messageTemplateFrame.BorderSizePixel = 0
+messageTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
+
+local messageGradient = Instance.new("UIGradient")
+messageGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 233, 235)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 233, 235):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+})
+messageGradient.Rotation = 45
+messageGradient.Parent = messageTemplateFrame
+
+local messageStroke = Instance.new("UIStroke")
+messageStroke.Thickness = 2
+messageStroke.Color = Color3.fromRGB(112, 118, 130)
+messageStroke.Transparency = 0.3
+messageStroke.Parent = messageTemplateFrame
+
+messageTemplateCorner.Name = "templateCorner"
+messageTemplateCorner.CornerRadius = UDim.new(0, 8)
+messageTemplateCorner.Parent = messageTemplateFrame
+
+messageSeverityFrame.Name = "severityFrame"
+messageSeverityFrame.Parent = messageTemplateFrame
+messageSeverityFrame.BackgroundColor3 = Color3.fromRGB(112, 118, 130)
+messageSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
+
+messageSeverityCorner.Name = "severityCorner"
+messageSeverityCorner.CornerRadius = UDim.new(0, 8)
+messageSeverityCorner.Parent = messageSeverityFrame
+
+hideMessageSeverityCornerFrame.Name = "hideSeverityCornerFrame"
+hideMessageSeverityCornerFrame.Parent = messageSeverityFrame
+hideMessageSeverityCornerFrame.BackgroundColor3 = Color3.fromRGB(233, 233, 235)
+hideMessageSeverityCornerFrame.BorderSizePixel = 0
+hideMessageSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
+hideMessageSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
+
+messageInformationFrame.Name = "informationFrame"
+messageInformationFrame.Parent = messageTemplateFrame
+messageInformationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageInformationFrame.BackgroundTransparency = 1
+messageInformationFrame.BorderSizePixel = 0
+messageInformationFrame.Position = UDim2.new(0, 20, 0, 5)
+messageInformationFrame.Size = UDim2.new(1, -50, 1, -10)
+
+messageHeadingText.Name = "headingText"
+messageHeadingText.Parent = messageInformationFrame
+messageHeadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageHeadingText.BackgroundTransparency = 1
+messageHeadingText.BorderSizePixel = 0
+messageHeadingText.ClipsDescendants = true
+messageHeadingText.Size = UDim2.new(1, 0, 0, 24)
+messageHeadingText.Font = Enum.Font.GothamBold
+messageHeadingText.Text = "Custom message"
+messageHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+messageHeadingText.TextSize = 16
+messageHeadingText.TextXAlignment = Enum.TextXAlignment.Left
+messageHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
+
+local messageHeadingStroke = Instance.new("UIStroke")
+messageHeadingStroke.Thickness = 1
+messageHeadingStroke.Color = Color3.fromRGB(112, 118, 130)
+messageHeadingStroke.Transparency = 0.5
+messageHeadingStroke.Parent = messageHeadingText
+
+messageBodyText.Name = "bodyText"
+messageBodyText.Parent = messageInformationFrame
+messageBodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageBodyText.BackgroundTransparency = 1
+messageBodyText.BorderSizePixel = 0
+messageBodyText.ClipsDescendants = true
+messageBodyText.Position = UDim2.new(0, 0, 0, 26)
+messageBodyText.Size = UDim2.new(1, 0, 1, -26)
+messageBodyText.Font = Enum.Font.GothamMedium
+messageBodyText.Text = "Custom message"
+messageBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
+messageBodyText.TextSize = 14
+messageBodyText.TextWrapped = true
+messageBodyText.TextXAlignment = Enum.TextXAlignment.Left
+messageBodyText.TextYAlignment = Enum.TextYAlignment.Top
+
+messageCornerHidingFrame.Name = "cornerHidingFrame"
+messageCornerHidingFrame.Parent = messageTemplateFrame
+messageCornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
+messageCornerHidingFrame.BackgroundColor3 = Color3.fromRGB(233, 233, 235)
+messageCornerHidingFrame.BorderSizePixel = 0
+messageCornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
+messageCornerHidingFrame.Size = UDim2.new(.1, 0, 1, 0)
+messageCornerHidingFrame.ZIndex = 0
+
+messageCloseButton.Name = "closeButton"
+messageCloseButton.Parent = messageTemplateFrame
+messageCloseButton.AnchorPoint = Vector2.new(1, 0.5)
+messageCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageCloseButton.BackgroundTransparency = 1
+messageCloseButton.BorderSizePixel = 0
+messageCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
+messageCloseButton.Size = UDim2.new(0, 18, 0, 18)
+messageCloseButton.Image = "rbxassetid://9127564477"
+messageCloseButton.ImageColor3 = Color3.fromRGB(112, 118, 130)
+
+successTemplate.Name = "success"
+successTemplate.AnchorPoint = Vector2.new(1, 0)
+successTemplate.BackgroundColor3 = Color3.fromRGB(196, 247, 221)
+successTemplate.BorderSizePixel = 0
+successTemplate.BackgroundTransparency = 1
+successTemplate.Position = UDim2.new(1, 0, 0, 0)
+successTemplate.Size = UDim2.new(1, 0, 0, 50)
+
+successTemplateFrame.Name = "templateFrame"
+successTemplateFrame.Parent = successTemplate
+successTemplateFrame.BackgroundColor3 = Color3.fromRGB(196, 247, 221)
+successTemplateFrame.BorderSizePixel = 0
+successTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
+
+local successGradient = Instance.new("UIGradient")
+successGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(196, 247, 221)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(196, 247, 221):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+})
+successGradient.Rotation = 45
+successGradient.Parent = successTemplateFrame
+
+local successStroke = Instance.new("UIStroke")
+successStroke.Thickness = 2
+successStroke.Color = Color3.fromRGB(50, 195, 125)
+successStroke.Transparency = 0.3
+successStroke.Parent = successTemplateFrame
+
+successTemplateCorner.Name = "templateCorner"
+successTemplateCorner.CornerRadius = UDim.new(0, 8)
+successTemplateCorner.Parent = successTemplateFrame
+
+successSeverityFrame.Name = "severityFrame"
+successSeverityFrame.Parent = successTemplateFrame
+successSeverityFrame.BackgroundColor3 = Color3.fromRGB(50, 195, 125)
+successSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
+
+successSeverityCorner.Name = "severityCorner"
+successSeverityCorner.CornerRadius = UDim.new(0, 8)
+successSeverityCorner.Parent = successSeverityFrame
+
+hideSuccessSeverityCornerFrame.Name = "hideSeverityCornerFrame"
+hideSuccessSeverityCornerFrame.Parent = successSeverityFrame
+hideSuccessSeverityCornerFrame.BackgroundColor3 = Color3.fromRGB(196, 247, 221)
+hideSuccessSeverityCornerFrame.BorderSizePixel = 0
+hideSuccessSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
+hideSuccessSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
+
+successImage.Name = "image"
+successImage.Parent = successTemplateFrame
+successImage.AnchorPoint = Vector2.new(0, 0.5)
+successImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successImage.BackgroundTransparency = 1
+successImage.BorderSizePixel = 0
+successImage.Position = UDim2.new(0, 20, 0.5, 0)
+successImage.Size = UDim2.new(0, 24, 0, 24)
+successImage.Image = "rbxassetid://9073052584"
+successImage.ImageColor3 = Color3.fromRGB(50, 195, 125)
+
+successInformationFrame.Name = "informationFrame"
+successInformationFrame.Parent = successTemplateFrame
+successInformationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successInformationFrame.BackgroundTransparency = 1
+successInformationFrame.BorderSizePixel = 0
+successInformationFrame.Position = UDim2.new(0, 50, 0, 5)
+successInformationFrame.Size = UDim2.new(1, -80, 1, -10)
+
+successHeadingText.Name = "headingText"
+successHeadingText.Parent = successInformationFrame
+successHeadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successHeadingText.BackgroundTransparency = 1
+successHeadingText.BorderSizePixel = 0
+successHeadingText.ClipsDescendants = true
+successHeadingText.Size = UDim2.new(1, 0, 0, 24)
+successHeadingText.Font = Enum.Font.GothamBold
+successHeadingText.Text = "Success"
+successHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+successHeadingText.TextSize = 16
+successHeadingText.TextXAlignment = Enum.TextXAlignment.Left
+successHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
+
+local successHeadingStroke = Instance.new("UIStroke")
+successHeadingStroke.Thickness = 1
+successHeadingStroke.Color = Color3.fromRGB(50, 195, 125)
+successHeadingStroke.Transparency = 0.5
+successHeadingStroke.Parent = successHeadingText
+
+successBodyText.Name = "bodyText"
+successBodyText.Parent = successInformationFrame
+successBodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successBodyText.BackgroundTransparency = 1
+successBodyText.BorderSizePixel = 0
+successBodyText.ClipsDescendants = true
+successBodyText.Position = UDim2.new(0, 0, 0, 26)
+successBodyText.Size = UDim2.new(1, 0, 1, -26)
+successBodyText.Font = Enum.Font.GothamMedium
+successBodyText.Text = "Success message"
+successBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
+successBodyText.TextSize = 14
+successBodyText.TextWrapped = true
+successBodyText.TextXAlignment = Enum.TextXAlignment.Left
+successBodyText.TextYAlignment = Enum.TextYAlignment.Top
+
+successCornerHidingFrame.Name = "cornerHidingFrame"
+successCornerHidingFrame.Parent = successTemplateFrame
+successCornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
+successCornerHidingFrame.BackgroundColor3 = Color3.fromRGB(196, 247, 221)
+successCornerHidingFrame.BorderSizePixel = 0
+successCornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
+successCornerHidingFrame.Size = UDim2.new(.1, 0, 1, 0)
+successCornerHidingFrame.ZIndex = 0
+
+successCloseButton.Name = "closeButton"
+successCloseButton.Parent = successTemplateFrame
+successCloseButton.AnchorPoint = Vector2.new(1, 0.5)
+successCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successCloseButton.BackgroundTransparency = 1
+successCloseButton.BorderSizePixel = 0
+successCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
+successCloseButton.Size = UDim2.new(0, 18, 0, 18)
+successCloseButton.Image = "rbxassetid://9127564477"
+successCloseButton.ImageColor3 = Color3.fromRGB(50, 195, 125)
+
+warningTemplate.Name = "warning"
+warningTemplate.AnchorPoint = Vector2.new(1, 0)
+warningTemplate.BackgroundColor3 = Color3.fromRGB(255, 232, 197)
+warningTemplate.BorderSizePixel = 0
+warningTemplate.BackgroundTransparency = 1
+warningTemplate.Position = UDim2.new(1, 0, 0, 0)
+warningTemplate.Size = UDim2.new(1, 0, 0, 50)
+
+warningTemplateFrame.Name = "templateFrame"
+warningTemplateFrame.Parent = warningTemplate
+warningTemplateFrame.BackgroundColor3 = Color3.fromRGB(255, 232, 197)
+warningTemplateFrame.BorderSizePixel = 0
+warningTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
+
+local warningGradient = Instance.new("UIGradient")
+warningGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 232, 197)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 232, 197):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+})
+warningGradient.Rotation = 45
+warningGradient.Parent = warningTemplateFrame
+
+local warningStroke = Instance.new("UIStroke")
+warningStroke.Thickness = 2
+warningStroke.Color = Color3.fromRGB(234, 159, 53)
+warningStroke.Transparency = 0.3
+warningStroke.Parent = warningTemplateFrame
+
+warningTemplateCorner.Name = "templateCorner"
+warningTemplateCorner.CornerRadius = UDim.new(0, 8)
+warningTemplateCorner.Parent = warningTemplateFrame
+
+warningSeverityFrame.Name = "severityFrame"
+warningSeverityFrame.Parent = warningTemplateFrame
+warningSeverityFrame.BackgroundColor3 = Color3.fromRGB(234, 159, 53)
+warningSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
+
+warningSeverityCorner.Name = "severityCorner"
+warningSeverityCorner.CornerRadius = UDim.new(0, 8)
+warningSeverityCorner.Parent = warningSeverityFrame
+
+hideWarningSeverityCornerFrame.Name = "hideSeverityCornerFrame"
+hideWarningSeverityCornerFrame.Parent = warningSeverityFrame
+hideWarningSeverityCornerFrame.BackgroundColor3 = Color3.fromRGB(255, 232, 197)
+hideWarningSeverityCornerFrame.BorderSizePixel = 0
+hideWarningSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
+hideWarningSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
+
+warningImage.Name = "image"
+warningImage.Parent = warningTemplateFrame
+warningImage.AnchorPoint = Vector2.new(0, 0.5)
+warningImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningImage.BackgroundTransparency = 1
+warningImage.BorderSizePixel = 0
+warningImage.Position = UDim2.new(0, 20, 0.5, 0)
+warningImage.Size = UDim2.new(0, 24, 0, 24)
+warningImage.Image = "rbxassetid://9072448788"
+warningImage.ImageColor3 = Color3.fromRGB(234, 159, 53)
+
+warningInformationFrame.Name = "informationFrame"
+warningInformationFrame.Parent = warningTemplateFrame
+warningInformationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningInformationFrame.BackgroundTransparency = 1
+warningInformationFrame.BorderSizePixel = 0
+warningInformationFrame.Position = UDim2.new(0, 50, 0, 5)
+warningInformationFrame.Size = UDim2.new(1, -80, 1, -10)
+
+warningHeadingText.Name = "headingText"
+warningHeadingText.Parent = warningInformationFrame
+warningHeadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningHeadingText.BackgroundTransparency = 1
+warningHeadingText.BorderSizePixel = 0
+warningHeadingText.ClipsDescendants = true
+warningHeadingText.Size = UDim2.new(1, 0, 0, 24)
+warningHeadingText.Font = Enum.Font.GothamBold
+warningHeadingText.Text = "Warning"
+warningHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+warningHeadingText.TextSize = 16
+warningHeadingText.TextXAlignment = Enum.TextXAlignment.Left
+warningHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
+
+local warningHeadingStroke = Instance.new("UIStroke")
+warningHeadingStroke.Thickness = 1
+warningHeadingStroke.Color = Color3.fromRGB(234, 159, 53)
+warningHeadingStroke.Transparency = 0.5
+warningHeadingStroke.Parent = warningHeadingText
+
+warningBodyText.Name = "bodyText"
+warningBodyText.Parent = warningInformationFrame
+warningBodyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningBodyText.BackgroundTransparency = 1
+warningBodyText.BorderSizePixel = 0
+warningBodyText.ClipsDescendants = true
+warningBodyText.Position = UDim2.new(0, 0, 0, 26)
+warningBodyText.Size = UDim2.new(1, 0, 1, -26)
+warningBodyText.Font = Enum.Font.GothamMedium
+warningBodyText.Text = "Warning message"
+warningBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
+warningBodyText.TextSize = 14
+warningBodyText.TextWrapped = true
+warningBodyText.TextXAlignment = Enum.TextXAlignment.Left
+warningBodyText.TextYAlignment = Enum.TextYAlignment.Top
+
+warningCornerHidingFrame.Name = "cornerHidingFrame"
+warningCornerHidingFrame.Parent = warningTemplateFrame
+warningCornerHidingFrame.AnchorPoint = Vector2.new(1, 0)
+warningCornerHidingFrame.BackgroundColor3 = Color3.fromRGB(255, 232, 197)
+warningCornerHidingFrame.BorderSizePixel = 0
+warningCornerHidingFrame.Position = UDim2.new(1, 0, 0, 0)
+warningCornerHidingFrame.Size = UDim2.new(.1, 0, 1, 0)
+warningCornerHidingFrame.ZIndex = 0
+
+warningCloseButton.Name = "closeButton"
+warningCloseButton.Parent = warningTemplateFrame
+warningCloseButton.AnchorPoint = Vector2.new(1, 0.5)
+warningCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningCloseButton.BackgroundTransparency = 1
+warningCloseButton.BorderSizePixel = 0
+warningCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
+warningCloseButton.Size = UDim2.new(0, 18, 0, 18)
+warningCloseButton.Image = "rbxassetid://9127564477"
+warningCloseButton.ImageColor3 = Color3.fromRGB(234, 159, 53)
 
 local function scaleNotifHolderMaxNotifs()
     local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y / 50)
@@ -228,7 +758,7 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
     assert(notif, "Notification type not valid\nValid Types: {\n\tError\n\tInfo\n\tMessage\n\tSuccess\n\tWarning\n}")
     notif = notif:Clone()
     notif.templateFrame.Position = UDim2.new(1, 50, 0, 0)
-    notif.templateFrame.Transparency = 1
+    notif.templateFrame.BackgroundTransparency = 1
     notif.templateFrame.Size = UDim2.new(1, 0, 1, 0, 0.8) -- Start slightly smaller
 
     local function checkTextSize()
@@ -252,7 +782,7 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
         pcall(function() openSound:Play() end)
         local tweenIn = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
             Position = UDim2.new(0, 0, 0, 0),
-            Transparency = 0,
+            BackgroundTransparency = 0,
             Size = UDim2.new(1, 0, 1, 0)
         })
         tweenIn:Play()
@@ -263,7 +793,7 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             pcall(function() closeSound:Play() end)
             local tweenOut = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
                 Position = UDim2.new(1, 50, 0, 0),
-                Transparency = 1,
+                BackgroundTransparency = 1,
                 Size = UDim2.new(1, 0, 1, 0, 0.8)
             })
             tweenOut:Play()
@@ -328,13 +858,14 @@ function Notification:deleteTimeout(waitTime)
     self.IsClosing = true
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
-        waitTime = waitTime or 3
-        task.wait(waitTime)
         local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
             Position = UDim2.new(1, 50, 0, 0),
-            Transparency = 1,
+            BackgroundTransparency = 1,
             Size = UDim2.new(1, 0, 1, 0, 0.8)
         })
+        waitTime = waitTime or 3
+        task.wait(waitTime)
+        if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
         pcall(function() closeSound:Play() end)
         closeTween:Play()
         closeTween.Completed:Wait()
@@ -351,7 +882,7 @@ function Notification:delete()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
         local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
             Position = UDim2.new(1, 50, 0, 0),
-            Transparency = 1,
+            BackgroundTransparency = 1,
             Size = UDim2.new(1, 0, 1, 0, 0.8)
         })
         pcall(function() closeSound:Play() end)
