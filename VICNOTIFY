@@ -663,7 +663,7 @@ warningGradient.Parent = warningTemplateFrame
 
 local warningStroke = Instance.new("UIStroke")
 warningStroke.Thickness = 1.5
-warningStroke.Color3 = Color3.fromRGB(234, 159, 53)
+warningStroke.Color = Color3.fromRGB(234, 159, 53)
 warningStroke.Transparency = 0.3
 warningStroke.Parent = warningTemplateFrame
 
