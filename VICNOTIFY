@@ -24,8 +24,8 @@ local errorHeadingText = Instance.new("TextLabel")
 local errorBodyText = Instance.new("TextLabel")
 local errorCornerHidingFrame = Instance.new("Frame")
 local errorCloseButton = Instance.new("ImageButton")
-local errorLeftBlock = Instance.new("Frame") -- New block for animation
-local errorRightBlock = Instance.new("Frame") -- New block for animation
+local errorLeftBlock = Instance.new("Frame")
+local errorRightBlock = Instance.new("Frame")
 local infoTemplate = Instance.new("Frame")
 local infoTemplateFrame = Instance.new("Frame")
 local infoSeverityFrame = Instance.new("Frame")
@@ -38,8 +38,8 @@ local infoBodyText = Instance.new("TextLabel")
 local infoCornerHidingFrame = Instance.new("Frame")
 local infoCloseButton = Instance.new("ImageButton")
 local infoTemplateCorner = Instance.new("UICorner")
-local infoLeftBlock = Instance.new("Frame") -- New block for animation
-local infoRightBlock = Instance.new("Frame") -- New block for animation
+local infoLeftBlock = Instance.new("Frame")
+local infoRightBlock = Instance.new("Frame")
 local messageTemplate = Instance.new("Frame")
 local messageTemplateFrame = Instance.new("Frame")
 local messageTemplateCorner = Instance.new("UICorner")
@@ -51,8 +51,8 @@ local messageHeadingText = Instance.new("TextLabel")
 local messageBodyText = Instance.new("TextLabel")
 local messageCornerHidingFrame = Instance.new("Frame")
 local messageCloseButton = Instance.new("ImageButton")
-local messageLeftBlock = Instance.new("Frame") -- New block for animation
-local messageRightBlock = Instance.new("Frame") -- New block for animation
+local messageLeftBlock = Instance.new("Frame")
+local messageRightBlock = Instance.new("Frame")
 local successTemplate = Instance.new("Frame")
 local successTemplateFrame = Instance.new("Frame")
 local successTemplateCorner = Instance.new("UICorner")
@@ -65,8 +65,8 @@ local successHeadingText = Instance.new("TextLabel")
 local successBodyText = Instance.new("TextLabel")
 local successCornerHidingFrame = Instance.new("Frame")
 local successCloseButton = Instance.new("ImageButton")
-local successLeftBlock = Instance.new("Frame") -- New block for animation
-local successRightBlock = Instance.new("Frame") -- New block for animation
+local successLeftBlock = Instance.new("Frame")
+local successRightBlock = Instance.new("Frame")
 local warningTemplate = Instance.new("Frame")
 local warningTemplateFrame = Instance.new("Frame")
 local warningTemplateCorner = Instance.new("UICorner")
@@ -79,8 +79,8 @@ local warningHeadingText = Instance.new("TextLabel")
 local warningBodyText = Instance.new("TextLabel")
 local warningCornerHidingFrame = Instance.new("Frame")
 local warningCloseButton = Instance.new("ImageButton")
-local warningLeftBlock = Instance.new("Frame") -- New block for animation
-local warningRightBlock = Instance.new("Frame") -- New block for animation
+local warningLeftBlock = Instance.new("Frame")
+local warningRightBlock = Instance.new("Frame")
 
 local function getParentGui()
     local success, result = pcall(function()
@@ -126,7 +126,7 @@ notifsHolderFrame.BackgroundTransparency = 1
 notifsHolderFrame.BorderSizePixel = 0
 notifsHolderFrame.ClipsDescendants = true
 notifsHolderFrame.Position = UDim2.new(1, -10, 0, 50)
-notifsHolderFrame.Size = UDim2.fromScale(0.25, 0.35) -- Reduced size
+notifsHolderFrame.Size = UDim2.fromScale(0.25, 0.35)
 
 notifHolderListLayout.Name = "notifHolderListLayout"
 notifHolderListLayout.Parent = notifsHolderFrame
@@ -141,14 +141,14 @@ errorTemplate.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
 errorTemplate.BorderSizePixel = 0
 errorTemplate.BackgroundTransparency = 1
 errorTemplate.Position = UDim2.new(1, 0, 0, 0)
-errorTemplate.Size = UDim2.new(1, 0, 0, 45) -- Reduced height
+errorTemplate.Size = UDim2.new(1, 0, 0, 45)
 
 errorTemplateFrame.Name = "templateFrame"
 errorTemplateFrame.Parent = errorTemplate
 errorTemplateFrame.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
 errorTemplateFrame.BorderSizePixel = 0
 errorTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
-errorTemplateFrame.BackgroundTransparency = 1 -- Initially transparent
+errorTemplateFrame.BackgroundTransparency = 1
 
 local errorGradient = Instance.new("UIGradient")
 errorGradient.Color = ColorSequence.new({
@@ -189,7 +189,7 @@ errorImage.Parent = errorTemplateFrame
 errorImage.AnchorPoint = Vector2.new(0, 0.5)
 errorImage.BackgroundTransparency = 1
 errorImage.Position = UDim2.new(0, 15, 0.5, 0)
-errorImage.Size = UDim2.new(0, 20, 0, 20) -- Slightly smaller
+errorImage.Size = UDim2.new(0, 20, 0, 20)
 errorImage.Image = "rbxassetid://9072920609"
 errorImage.ImageColor3 = Color3.fromRGB(236, 88, 76)
 
@@ -207,7 +207,7 @@ errorHeadingText.Size = UDim2.new(1, 0, 0, 20)
 errorHeadingText.Font = Enum.Font.GothamBold
 errorHeadingText.Text = "Error"
 errorHeadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
-errorHeadingText.TextSize = 14 -- Slightly smaller
+errorHeadingText.TextSize = 14
 errorHeadingText.TextXAlignment = Enum.TextXAlignment.Left
 errorHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
 
@@ -226,7 +226,7 @@ errorBodyText.Size = UDim2.new(1, 0, 1, -22)
 errorBodyText.Font = Enum.Font.GothamMedium
 errorBodyText.Text = "Error message"
 errorBodyText.TextColor3 = Color3.fromRGB(255, 255, 255)
-errorBodyText.TextSize = 12 -- Slightly smaller
+errorBodyText.TextSize = 12
 errorBodyText.TextWrapped = true
 errorBodyText.TextXAlignment = Enum.TextXAlignment.Left
 errorBodyText.TextYAlignment = Enum.TextYAlignment.Top
@@ -245,7 +245,7 @@ errorCloseButton.Parent = errorTemplateFrame
 errorCloseButton.AnchorPoint = Vector2.new(1, 0.5)
 errorCloseButton.BackgroundTransparency = 1
 errorCloseButton.Position = UDim2.new(1, -5, 0.5, 0)
-errorCloseButton.Size = UDim2.new(0, 15, 0, 15) -- Slightly smaller
+errorCloseButton.Size = UDim2.new(0, 15, 0, 15)
 errorCloseButton.Image = "rbxassetid://9127564477"
 errorCloseButton.ImageColor3 = Color3.fromRGB(236, 88, 76)
 
@@ -559,7 +559,7 @@ hideSuccessSeverityCornerFrame.BorderSizePixel = 0
 hideSuccessSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
 hideSuccessSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
 
-successImage.Name = "image"
+successImage.Name = programmers
 successImage.Parent = successTemplateFrame
 successImage.AnchorPoint = Vector2.new(0, 0.5)
 successImage.BackgroundTransparency = 1
@@ -693,8 +693,8 @@ warningImage.AnchorPoint = Vector2.new(0, 0.5)
 warningImage.BackgroundTransparency = 1
 warningImage.Position = UDim2.new(0, 15, 0.5, 0)
 warningImage.Size = UDim2.new(0, 20, 0, 20)
-warningImage.Image = "rbxassetid://9072448788"
-warningImage.Image = warningImage
+warningImage.Image = "rbxassetid://9072448788" -- Fixed: warningImage → Content ID
+warningImage.ImageColor3 = Color3.fromRGB(234, 159, 53)
 
 warningInformationFrame.Name = "informationFrame"
 warningInformationFrame.Parent = warningTemplateFrame
@@ -767,7 +767,7 @@ warningRightBlock.Position = UDim2.new(0.5, 0, 0, 0)
 warningRightBlock.ZIndex = 10
 
 local function scaleNotifHolderMaxNotifs()
-    local amountOfNotifsInFrame = math.floor(notifsHolderFrame.Y / 45) -- Adjusted height
+    local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y / 45)
     local notifsHolderFramePadding = amountOfNotifsInFrame * notifHolderListLayout.Padding.Offset
     notifsHolderFrame.Size = UDim2.new(0.25, 0, 0, amountOfNotifsInFrame * 45 + notifsHolderFramePadding)
 end
@@ -814,38 +814,32 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
 
     local function openNotif()
         pcall(function() openSound:Play() end)
-        -- Blok kiri (lebih lambat, 0.6 detik)
         local leftBlockTween = ts:Create(notif.templateFrame.leftBlock, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
             Position = UDim2.new(-0.5, 0, 0, 0)
         })
-        -- Blok kanan (lebih cepat, 0.4 detik)
         local rightBlockTween = ts:Create(notif.templateFrame.rightBlock, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
             Position = UDim2.new(1, 0, 0, 0)
         })
-        -- Fade-in konten
         local contentFade = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
             BackgroundTransparency = 0
         })
         leftBlockTween:Play()
         rightBlockTween:Play()
-        task.wait(0.2) -- Delay sedikit sebelum konten muncul
+        task.wait(0.2)
         contentFade:Play()
     end
 
     local function closeNotif()
         coroutine.wrap(function()
             pcall(function() closeSound:Play() end)
-            -- Fade-out konten dulu
             local contentFade = ts:Create(notif.templateFrame, TweenInfo.new(0.3, Enum.EasingStyle.Linear), {
                 BackgroundTransparency = 1
             })
             contentFade:Play()
             contentFade.Completed:Wait()
-            -- Blok kiri kembali (lebih lambat, 0.6 detik)
             local leftBlockTween = ts:Create(notif.templateFrame.leftBlock, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
                 Position = UDim2.new(0, 0, 0, 0)
             })
-            -- Blok kanan kembali (lebih cepat, 0.4 detik)
             local rightBlockTween = ts:Create(notif.templateFrame.rightBlock, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
                 Position = UDim2.new(0.5, 0, 0, 0)
             })
