@@ -253,14 +253,14 @@ errorLeftBlock.Name = "leftBlock"
 errorLeftBlock.Parent = errorTemplateFrame
 errorLeftBlock.BackgroundColor3 = Color3.fromRGB(236, 88, 76)
 errorLeftBlock.Size = UDim2.new(0.5, 0, 1, 0)
-errorLeftBlock.Position = UDim2.new(1, 0, 0, 0) -- Start off-screen right
+errorLeftBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 errorLeftBlock.ZIndex = 10
 
 errorRightBlock.Name = "rightBlock"
 errorRightBlock.Parent = errorTemplateFrame
 errorRightBlock.BackgroundColor3 = Color3.fromRGB(236, 88, 76)
 errorRightBlock.Size = UDim2.new(0.5, 0, 1, 0)
-errorRightBlock.Position = UDim2.new(1.5, 0, 0, 0) -- Start further off-screen right
+errorRightBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 errorRightBlock.ZIndex = 10
 
 infoTemplate.Name = "info"
@@ -381,14 +381,14 @@ infoLeftBlock.Name = "leftBlock"
 infoLeftBlock.Parent = infoTemplateFrame
 infoLeftBlock.BackgroundColor3 = Color3.fromRGB(50, 131, 226)
 infoLeftBlock.Size = UDim2.new(0.5, 0, 1, 0)
-infoLeftBlock.Position = UDim2.new(1, 0, 0, 0) -- Start off-screen right
+infoLeftBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 infoLeftBlock.ZIndex = 10
 
 infoRightBlock.Name = "rightBlock"
 infoRightBlock.Parent = infoTemplateFrame
 infoRightBlock.BackgroundColor3 = Color3.fromRGB(50, 131, 226)
 infoRightBlock.Size = UDim2.new(0.5, 0, 1, 0)
-infoRightBlock.Position = UDim2.new(1.5, 0, 0, 0) -- Start further off-screen right
+infoRightBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 infoRightBlock.ZIndex = 10
 
 messageTemplate.Name = "message"
@@ -500,14 +500,14 @@ messageLeftBlock.Name = "leftBlock"
 messageLeftBlock.Parent = messageTemplateFrame
 messageLeftBlock.BackgroundColor3 = Color3.fromRGB(112, 118, 130)
 messageLeftBlock.Size = UDim2.new(0.5, 0, 1, 0)
-messageLeftBlock.Position = UDim2.new(1, 0, 0, 0) -- Start off-screen right
+messageLeftBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 messageLeftBlock.ZIndex = 10
 
 messageRightBlock.Name = "rightBlock"
 messageRightBlock.Parent = messageTemplateFrame
 messageRightBlock.BackgroundColor3 = Color3.fromRGB(112, 118, 130)
 messageRightBlock.Size = UDim2.new(0.5, 0, 1, 0)
-messageRightBlock.Position = UDim2.new(1.5, 0, 0, 0) -- Start further off-screen right
+messageRightBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 messageRightBlock.ZIndex = 10
 
 successTemplate.Name = "success"
@@ -628,14 +628,14 @@ successLeftBlock.Name = "leftBlock"
 successLeftBlock.Parent = successTemplateFrame
 successLeftBlock.BackgroundColor3 = Color3.fromRGB(50, 195, 125)
 successLeftBlock.Size = UDim2.new(0.5, 0, 1, 0)
-successLeftBlock.Position = UDim2.new(1, 0, 0, 0) -- Start off-screen right
+successLeftBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 successLeftBlock.ZIndex = 10
 
 successRightBlock.Name = "rightBlock"
 successRightBlock.Parent = successTemplateFrame
 successRightBlock.BackgroundColor3 = Color3.fromRGB(50, 195, 125)
 successRightBlock.Size = UDim2.new(0.5, 0, 1, 0)
-successRightBlock.Position = UDim2.new(1.5, 0, 0, 0) -- Start further off-screen right
+successRightBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 successRightBlock.ZIndex = 10
 
 warningTemplate.Name = "warning"
@@ -756,14 +756,14 @@ warningLeftBlock.Name = "leftBlock"
 warningLeftBlock.Parent = warningTemplateFrame
 warningLeftBlock.BackgroundColor3 = Color3.fromRGB(234, 159, 53)
 warningLeftBlock.Size = UDim2.new(0.5, 0, 1, 0)
-warningLeftBlock.Position = UDim2.new(1, 0, 0, 0) -- Start off-screen right
+warningLeftBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 warningLeftBlock.ZIndex = 10
 
 warningRightBlock.Name = "rightBlock"
 warningRightBlock.Parent = warningTemplateFrame
 warningRightBlock.BackgroundColor3 = Color3.fromRGB(234, 159, 53)
 warningRightBlock.Size = UDim2.new(0.5, 0, 1, 0)
-warningRightBlock.Position = UDim2.new(1.5, 0, 0, 0) -- Start further off-screen right
+warningRightBlock.Position = UDim2.new(-0.5, 0, 0, 0) -- Mulai dari kiri
 warningRightBlock.ZIndex = 10
 
 local function scaleNotifHolderMaxNotifs()
@@ -829,12 +829,12 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             fallbackSound:Destroy()
         end
 
-        -- Blocks slide from right to left
+        -- Blocks slide from left to right
         local leftBlockTween = ts:Create(notif.templateFrame.leftBlock, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0, 0, 0, 0) -- Left block slides to original position
+            Position = UDim2.new(0, 0, 0, 0) -- Left block slides to left side
         })
         local rightBlockTween = ts:Create(notif.templateFrame.rightBlock, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0.5, 0, 0, 0) -- Right block slides to original position
+            Position = UDim2.new(0.5, 0, 0, 0) -- Right block slides to middle
         })
         local contentFade = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
             BackgroundTransparency = 0
@@ -853,12 +853,12 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             })
             contentFade:Play()
             contentFade.Completed:Wait()
-            -- Blocks slide back to right
+            -- Blocks slide back to left
             local leftBlockTween = ts:Create(notif.templateFrame.leftBlock, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-                Position = UDim2.new(1, 0, 0, 0) -- Left block slides back to right
+                Position = UDim2.new(-0.5, 0, 0, 0) -- Left block slides back to left
             })
             local rightBlockTween = ts:Create(notif.templateFrame.rightBlock, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-                Position = UDim2.new(1.5, 0, 0, 0) -- Right block slides back further right
+                Position = UDim2.new(-0.5, 0, 0, 0) -- Right block slides back to left
             })
             leftBlockTween:Play()
             rightBlockTween:Play()
