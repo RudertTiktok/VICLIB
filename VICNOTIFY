@@ -559,7 +559,7 @@ hideSuccessSeverityCornerFrame.BorderSizePixel = 0
 hideSuccessSeverityCornerFrame.Position = UDim2.new(0.5, 0, 0, 0)
 hideSuccessSeverityCornerFrame.Size = UDim2.new(0.5, 0, 1, 0)
 
-successImage.Name = programmers
+successImage.Name = "image"
 successImage.Parent = successTemplateFrame
 successImage.AnchorPoint = Vector2.new(0, 0.5)
 successImage.BackgroundTransparency = 1
