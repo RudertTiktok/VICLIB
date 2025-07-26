@@ -24,6 +24,8 @@ local errorHeadingText = Instance.new("TextLabel")
 local errorBodyText = Instance.new("TextLabel")
 local errorCornerHidingFrame = Instance.new("Frame")
 local errorCloseButton = Instance.new("ImageButton")
+local errorProgressBarFrame = Instance.new("Frame")
+local errorProgressBar = Instance.new("Frame")
 local infoTemplate = Instance.new("Frame")
 local infoTemplateFrame = Instance.new("Frame")
 local infoSeverityFrame = Instance.new("Frame")
@@ -36,6 +38,8 @@ local infoBodyText = Instance.new("TextLabel")
 local infoCornerHidingFrame = Instance.new("Frame")
 local infoCloseButton = Instance.new("ImageButton")
 local infoTemplateCorner = Instance.new("UICorner")
+local infoProgressBarFrame = Instance.new("Frame")
+local infoProgressBar = Instance.new("Frame")
 local messageTemplate = Instance.new("Frame")
 local messageTemplateFrame = Instance.new("Frame")
 local messageTemplateCorner = Instance.new("UICorner")
@@ -47,6 +51,8 @@ local messageHeadingText = Instance.new("TextLabel")
 local messageBodyText = Instance.new("TextLabel")
 local messageCornerHidingFrame = Instance.new("Frame")
 local messageCloseButton = Instance.new("ImageButton")
+local messageProgressBarFrame = Instance.new("Frame")
+local messageProgressBar = Instance.new("Frame")
 local successTemplate = Instance.new("Frame")
 local successTemplateFrame = Instance.new("Frame")
 local successTemplateCorner = Instance.new("UICorner")
@@ -59,6 +65,8 @@ local successHeadingText = Instance.new("TextLabel")
 local successBodyText = Instance.new("TextLabel")
 local successCornerHidingFrame = Instance.new("Frame")
 local successCloseButton = Instance.new("ImageButton")
+local successProgressBarFrame = Instance.new("Frame")
+local successProgressBar = Instance.new("Frame")
 local warningTemplate = Instance.new("Frame")
 local warningTemplateFrame = Instance.new("Frame")
 local warningTemplateCorner = Instance.new("UICorner")
@@ -71,6 +79,8 @@ local warningHeadingText = Instance.new("TextLabel")
 local warningBodyText = Instance.new("TextLabel")
 local warningCornerHidingFrame = Instance.new("Frame")
 local warningCloseButton = Instance.new("ImageButton")
+local warningProgressBarFrame = Instance.new("Frame")
+local warningProgressBar = Instance.new("Frame")
 
 local function getParentGui()
     local success, result = pcall(function()
@@ -110,19 +120,19 @@ notifications.ResetOnSpawn = false
 
 notifsHolderFrame.Name = "notifsHolderFrame"
 notifsHolderFrame.Parent = notifications
-notifsHolderFrame.AnchorPoint = Vector2.new(1, 0) -- Changed to top-right
+notifsHolderFrame.AnchorPoint = Vector2.new(1, 0)
 notifsHolderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 notifsHolderFrame.BackgroundTransparency = 1
 notifsHolderFrame.BorderSizePixel = 0
 notifsHolderFrame.ClipsDescendants = true
-notifsHolderFrame.Position = UDim2.new(1, -10, 0, 50) -- Moved up (50 pixels from top)
-notifsHolderFrame.Size = UDim2.fromScale(0.3, 0.4) -- Slightly larger
+notifsHolderFrame.Position = UDim2.new(1, -10, 0, 50)
+notifsHolderFrame.Size = UDim2.fromScale(0.3, 0.4)
 
 notifHolderListLayout.Name = "notifHolderListLayout"
 notifHolderListLayout.Parent = notifsHolderFrame
 notifHolderListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 notifHolderListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-notifHolderListLayout.VerticalAlignment = Enum.VerticalAlignment.Top -- Changed to top
+notifHolderListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 notifHolderListLayout.Padding = UDim.new(0, 6)
 
 errorTemplate.Name = "error"
@@ -131,7 +141,7 @@ errorTemplate.BackgroundColor3 = Color3.fromRGB(255, 207, 203)
 errorTemplate.BorderSizePixel = 0
 errorTemplate.BackgroundTransparency = 1
 errorTemplate.Position = UDim2.new(1, 0, 0, 0)
-errorTemplate.Size = UDim2.new(1, 0, 0, 50) -- Increased default height
+errorTemplate.Size = UDim2.new(1, 0, 0, 50)
 
 errorTemplateFrame.Name = "templateFrame"
 errorTemplateFrame.Parent = errorTemplate
@@ -247,6 +257,20 @@ errorCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
 errorCloseButton.Size = UDim2.new(0, 18, 0, 18)
 errorCloseButton.Image = "rbxassetid://9127524477"
 errorCloseButton.ImageColor3 = Color3.fromRGB(236, 88, 76)
+
+errorProgressBarFrame.Name = "progressBarFrame"
+errorProgressBarFrame.Parent = errorTemplateFrame
+errorProgressBarFrame.BackgroundColor3 = Color3.fromRGB(236, 88, 76)
+errorProgressBarFrame.BorderSizePixel = 0
+errorProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
+errorProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
+errorProgressBarFrame.ClipsDescendants = true
+
+errorProgressBar.Name = "progressBar"
+errorProgressBar.Parent = errorProgressBarFrame
+errorProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorProgressBar.BorderSizePixel = 0
+errorProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
 infoTemplate.Name = "info"
 infoTemplate.AnchorPoint = Vector2.new(1, 0)
@@ -371,6 +395,20 @@ infoTemplateCorner.Name = "templateCorner"
 infoTemplateCorner.CornerRadius = UDim.new(0, 8)
 infoTemplateCorner.Parent = infoTemplateFrame
 
+infoProgressBarFrame.Name = "progressBarFrame"
+infoProgressBarFrame.Parent = infoTemplateFrame
+infoProgressBarFrame.BackgroundColor3 = Color3.fromRGB(50, 131, 226)
+infoProgressBarFrame.BorderSizePixel = 0
+infoProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
+infoProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
+infoProgressBarFrame.ClipsDescendants = true
+
+infoProgressBar.Name = "progressBar"
+infoProgressBar.Parent = infoProgressBarFrame
+infoProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoProgressBar.BorderSizePixel = 0
+infoProgressBar.Size = UDim2.new(1, 0, 1, 0)
+
 messageTemplate.Name = "message"
 messageTemplate.AnchorPoint = Vector2.new(1, 0)
 messageTemplate.BackgroundColor3 = Color3.fromRGB(233, 233, 235)
@@ -482,6 +520,20 @@ messageCloseButton.Position = UDim2.new(1, -10, 0.5, 0)
 messageCloseButton.Size = UDim2.new(0, 18, 0, 18)
 messageCloseButton.Image = "rbxassetid://9127564477"
 messageCloseButton.ImageColor3 = Color3.fromRGB(112, 118, 130)
+
+messageProgressBarFrame.Name = "progressBarFrame"
+messageProgressBarFrame.Parent = messageTemplateFrame
+messageProgressBarFrame.BackgroundColor3 = Color3.fromRGB(112, 118, 130)
+messageProgressBarFrame.BorderSizePixel = 0
+messageProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
+messageProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
+messageProgressBarFrame.ClipsDescendants = true
+
+messageProgressBar.Name = "progressBar"
+messageProgressBar.Parent = messageProgressBarFrame
+messageProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageProgressBar.BorderSizePixel = 0
+messageProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
 successTemplate.Name = "success"
 successTemplate.AnchorPoint = Vector2.new(1, 0)
@@ -606,6 +658,20 @@ successCloseButton.Size = UDim2.new(0, 18, 0, 18)
 successCloseButton.Image = "rbxassetid://9127564477"
 successCloseButton.ImageColor3 = Color3.fromRGB(50, 195, 125)
 
+successProgressBarFrame.Name = "progressBarFrame"
+successProgressBarFrame.Parent = successTemplateFrame
+successProgressBarFrame.BackgroundColor3 = Color3.fromRGB(50, 195, 125)
+successProgressBarFrame.BorderSizePixel = 0
+successProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
+successProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
+successProgressBarFrame.ClipsDescendants = true
+
+successProgressBar.Name = "progressBar"
+successProgressBar.Parent = successProgressBarFrame
+successProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successProgressBar.BorderSizePixel = 0
+successProgressBar.Size = UDim2.new(1, 0, 1, 0)
+
 warningTemplate.Name = "warning"
 warningTemplate.AnchorPoint = Vector2.new(1, 0)
 warningTemplate.BackgroundColor3 = Color3.fromRGB(255, 232, 197)
@@ -729,6 +795,20 @@ warningCloseButton.Size = UDim2.new(0, 18, 0, 18)
 warningCloseButton.Image = "rbxassetid://9127564477"
 warningCloseButton.ImageColor3 = Color3.fromRGB(234, 159, 53)
 
+warningProgressBarFrame.Name = "progressBarFrame"
+warningProgressBarFrame.Parent = warningTemplateFrame
+warningProgressBarFrame.BackgroundColor3 = Color3.fromRGB(234, 159, 53)
+warningProgressBarFrame.BorderSizePixel = 0
+warningProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
+warningProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
+warningProgressBarFrame.ClipsDescendants = true
+
+warningProgressBar.Name = "progressBar"
+warningProgressBar.Parent = warningProgressBarFrame
+warningProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningProgressBar.BorderSizePixel = 0
+warningProgressBar.Size = UDim2.new(1, 0, 1, 0)
+
 local function scaleNotifHolderMaxNotifs()
     local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y / 50)
     local notifsHolderFramePadding = amountOfNotifsInFrame * notifHolderListLayout.Padding.Offset
@@ -759,13 +839,13 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
     notif = notif:Clone()
     notif.templateFrame.Position = UDim2.new(1, 50, 0, 0)
     notif.templateFrame.BackgroundTransparency = 1
-    notif.templateFrame.Size = UDim2.new(1, 0, 1, 0, 0.8) -- Start slightly smaller
+    notif.templateFrame.Size = UDim2.new(1, 0, 1, 0, 0.8)
 
     local function checkTextSize()
         local infoFrame = notif.templateFrame.informationFrame
         local requiredHeadingSize = txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).Y
         local requiredBodySize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(notifsHolderFrame.AbsoluteSize.X - 80, 10000)).Y
-        local totalHeight = requiredHeadingSize + requiredBodySize + 15
+        local totalHeight = requiredHeadingSize + requiredBodySize + 15 + 5
         if totalHeight > 50 then
             notif.Size = UDim2.new(1, 0, 0, totalHeight)
             notif.templateFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -813,11 +893,19 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
     if autoRemove then
         coroutine.wrap(function()
             autoRemoveTime = autoRemoveTime or 5
+            local progressBar = notif.templateFrame.progressBarFrame.progressBar
+            progressBar.Size = UDim2.new(1, 0, 1, 0)
+            local progressTween = ts:Create(progressBar, TweenInfo.new(autoRemoveTime, Enum.EasingStyle.Linear), {
+                Size = UDim2.new(0, 0, 1, 0)
+            })
+            progressTween:Play()
             task.wait(autoRemoveTime)
             if notif and notif:FindFirstChild("templateFrame") then
                 closeNotif()
             end
         end)()
+    else
+        notif.templateFrame.progressBarFrame.Visible = false
     end
 
     local newNotif = setmetatable({}, Notification)
@@ -845,7 +933,7 @@ function Notification:changeBody(newBody)
         self.Body = newBody
         local requiredBodySize = txtS:GetTextSize(newBody, self.Instance.templateFrame.informationFrame.bodyText.TextSize, self.Instance.templateFrame.informationFrame.bodyText.Font, Vector2.new(notifsHolderFrame.AbsoluteSize.X - 80, 10000)).Y
         local requiredHeadingSize = txtS:GetTextSize(self.Instance.templateFrame.informationFrame.headingText.Text, self.Instance.templateFrame.informationFrame.headingText.TextSize, self.Instance.templateFrame.informationFrame.headingText.Font, Vector2.new(10000, 10000)).Y
-        local totalHeight = requiredHeadingSize + requiredBodySize + 15
+        local totalHeight = requiredHeadingSize + requiredBodySize + 15 + 5
         if totalHeight > 50 then
             self.Instance.Size = UDim2.new(1, 0, 0, totalHeight)
             self.Instance.templateFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -917,6 +1005,7 @@ function Notification:changeColor(primary, secondary, textColor)
             if self.Type ~= "message" then
                 templateFrame.image.ImageColor3 = secondary
             end
+            templateFrame.progressBarFrame.BackgroundColor3 = secondary
         end
 
         if textColor then
