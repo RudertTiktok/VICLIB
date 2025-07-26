@@ -152,19 +152,19 @@ errorTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 local errorGradient = Instance.new("UIGradient")
 errorGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 207, 203)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 207, 203):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 207, 203):Lerp(Color3.fromRGB(200, 200, 200), 0.3))
 })
 errorGradient.Rotation = 45
 errorGradient.Parent = errorTemplateFrame
 
 local errorStroke = Instance.new("UIStroke")
-errorStroke.Thickness = 2
+errorStroke.Thickness = 3
 errorStroke.Color = Color3.fromRGB(236, 88, 76)
-errorStroke.Transparency = 0.3
+errorStroke.Transparency = 0.5
 errorStroke.Parent = errorTemplateFrame
 
 errorTemplateCorner.Name = "templateCorner"
-errorTemplateCorner.CornerRadius = UDim.new(0, 8)
+errorTemplateCorner.CornerRadius = UDim.new(0, 12)
 errorTemplateCorner.Parent = errorTemplateFrame
 
 errorSeverityFrame.Name = "severityFrame"
@@ -173,7 +173,7 @@ errorSeverityFrame.BackgroundColor3 = Color3.fromRGB(236, 88, 76)
 errorSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
 errorSeverityCorner.Name = "severityCorner"
-errorSeverityCorner.CornerRadius = UDim.new(0, 8)
+errorSeverityCorner.CornerRadius = UDim.new(0, 12)
 errorSeverityCorner.Parent = errorSeverityFrame
 
 hideErrorSeverityCornerFrame.Name = "hideSeverityCornerFrame"
@@ -266,9 +266,24 @@ errorProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
 errorProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
 errorProgressBarFrame.ClipsDescendants = true
 
+local errorProgressStroke = Instance.new("UIStroke")
+errorProgressStroke.Thickness = 1
+errorProgressStroke.Color = Color3.fromRGB(255, 255, 255)
+errorProgressStroke.Transparency = 0.7
+errorProgressStroke.Parent = errorProgressBarFrame
+
+local errorProgressGradient = Instance.new("UIGradient")
+errorProgressGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(236, 88, 76)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(236, 88, 76))
+})
+errorProgressGradient.Parent = errorProgressBarFrame
+
 errorProgressBar.Name = "progressBar"
 errorProgressBar.Parent = errorProgressBarFrame
 errorProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+errorProgressBar.BackgroundTransparency = 0.2
 errorProgressBar.BorderSizePixel = 0
 errorProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
@@ -289,15 +304,15 @@ infoTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 local infoGradient = Instance.new("UIGradient")
 infoGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(204, 226, 254)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(204, 226, 254):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(204, 226, 254):Lerp(Color3.fromRGB(200, 200, 200), 0.3))
 })
 infoGradient.Rotation = 45
 infoGradient.Parent = infoTemplateFrame
 
 local infoStroke = Instance.new("UIStroke")
-infoStroke.Thickness = 2
+infoStroke.Thickness = 3
 infoStroke.Color = Color3.fromRGB(50, 131, 226)
-infoStroke.Transparency = 0.3
+infoStroke.Transparency = 0.5
 infoStroke.Parent = infoTemplateFrame
 
 infoSeverityFrame.Name = "severityFrame"
@@ -306,7 +321,7 @@ infoSeverityFrame.BackgroundColor3 = Color3.fromRGB(50, 131, 226)
 infoSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
 infoSeverityCorner.Name = "severityCorner"
-infoSeverityCorner.CornerRadius = UDim.new(0, 8)
+infoSeverityCorner.CornerRadius = UDim.new(0, 12)
 infoSeverityCorner.Parent = infoSeverityFrame
 
 hideInfoSeverityCornerFrame.Name = "hideSeverityCornerFrame"
@@ -392,7 +407,7 @@ infoCloseButton.Image = "rbxassetid://9127564477"
 infoCloseButton.ImageColor3 = Color3.fromRGB(50, 131, 226)
 
 infoTemplateCorner.Name = "templateCorner"
-infoTemplateCorner.CornerRadius = UDim.new(0, 8)
+infoTemplateCorner.CornerRadius = UDim.new(0, 12)
 infoTemplateCorner.Parent = infoTemplateFrame
 
 infoProgressBarFrame.Name = "progressBarFrame"
@@ -403,9 +418,24 @@ infoProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
 infoProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
 infoProgressBarFrame.ClipsDescendants = true
 
+local infosProgressStroke = Instance.new("UIStroke")
+infoProgressStroke.Thickness = 1
+infoProgressStroke.Color = Color3.fromRGB(255, 255, 255)
+infoProgressStroke.Transparency = 0.7
+infoProgressStroke.Parent = infoProgressBarFrame
+
+local infoProgressGradient = Instance.new("UIGradient")
+infoProgressGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 131, 226)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 131, 226))
+})
+infoProgressGradient.Parent = infoProgressBarFrame
+
 infoProgressBar.Name = "progressBar"
 infoProgressBar.Parent = infoProgressBarFrame
 infoProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoProgressBar.BackgroundTransparency = 0.2
 infoProgressBar.BorderSizePixel = 0
 infoProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
@@ -426,19 +456,19 @@ messageTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 local messageGradient = Instance.new("UIGradient")
 messageGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 233, 235)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 233, 235):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 233, 235):Lerp(Color3.fromRGB(200, 200, 200), 0.3))
 })
 messageGradient.Rotation = 45
 messageGradient.Parent = messageTemplateFrame
 
 local messageStroke = Instance.new("UIStroke")
-messageStroke.Thickness = 2
+messageStroke.Thickness = 3
 messageStroke.Color = Color3.fromRGB(112, 118, 130)
-messageStroke.Transparency = 0.3
+messageStroke.Transparency = 0.5
 messageStroke.Parent = messageTemplateFrame
 
 messageTemplateCorner.Name = "templateCorner"
-messageTemplateCorner.CornerRadius = UDim.new(0, 8)
+messageTemplateCorner.CornerRadius = UDim.new(0, 12)
 messageTemplateCorner.Parent = messageTemplateFrame
 
 messageSeverityFrame.Name = "severityFrame"
@@ -447,7 +477,7 @@ messageSeverityFrame.BackgroundColor3 = Color3.fromRGB(112, 118, 130)
 messageSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
 messageSeverityCorner.Name = "severityCorner"
-messageSeverityCorner.CornerRadius = UDim.new(0, 8)
+messageSeverityCorner.CornerRadius = UDim.new(0, 12)
 messageSeverityCorner.Parent = messageSeverityFrame
 
 hideMessageSeverityCornerFrame.Name = "hideSeverityCornerFrame"
@@ -529,9 +559,24 @@ messageProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
 messageProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
 messageProgressBarFrame.ClipsDescendants = true
 
+local messageProgressStroke = Instance.new("UIStroke")
+messageProgressStroke.Thickness = 1
+messageProgressStroke.Color = Color3.fromRGB(255, 255, 255)
+messageProgressStroke.Transparency = 0.7
+messageProgressStroke.Parent = messageProgressBarFrame
+
+local messageProgressGradient = Instance.new("UIGradient")
+messageProgressGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(112, 118, 130)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(112, 118, 130))
+})
+messageProgressGradient.Parent = messageProgressBarFrame
+
 messageProgressBar.Name = "progressBar"
 messageProgressBar.Parent = messageProgressBarFrame
 messageProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+messageProgressBar.BackgroundTransparency = 0.2
 messageProgressBar.BorderSizePixel = 0
 messageProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
@@ -552,19 +597,19 @@ successTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 local successGradient = Instance.new("UIGradient")
 successGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(196, 247, 221)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(196, 247, 221):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(196, 247, 221):Lerp(Color3.fromRGB(200, 200, 200), 0.3))
 })
 successGradient.Rotation = 45
 successGradient.Parent = successTemplateFrame
 
 local successStroke = Instance.new("UIStroke")
-successStroke.Thickness = 2
+successStroke.Thickness = 3
 successStroke.Color = Color3.fromRGB(50, 195, 125)
-successStroke.Transparency = 0.3
+successStroke.Transparency = 0.5
 successStroke.Parent = successTemplateFrame
 
 successTemplateCorner.Name = "templateCorner"
-successTemplateCorner.CornerRadius = UDim.new(0, 8)
+successTemplateCorner.CornerRadius = UDim.new(0, 12)
 successTemplateCorner.Parent = successTemplateFrame
 
 successSeverityFrame.Name = "severityFrame"
@@ -573,7 +618,7 @@ successSeverityFrame.BackgroundColor3 = Color3.fromRGB(50, 195, 125)
 successSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
 successSeverityCorner.Name = "severityCorner"
-successSeverityCorner.CornerRadius = UDim.new(0, 8)
+successSeverityCorner.CornerRadius = UDim.new(0, 12)
 successSeverityCorner.Parent = successSeverityFrame
 
 hideSuccessSeverityCornerFrame.Name = "hideSeverityCornerFrame"
@@ -616,7 +661,7 @@ successHeadingText.TextSize = 16
 successHeadingText.TextXAlignment = Enum.TextXAlignment.Left
 successHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
 
-local successHeadingStroke = Instance.new("UIStroke")
+local successHeadingStroke = Instanceour Stroke = Instance.new("UIStroke")
 successHeadingStroke.Thickness = 1
 successHeadingStroke.Color = Color3.fromRGB(50, 195, 125)
 successHeadingStroke.Transparency = 0.5
@@ -666,9 +711,24 @@ successProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
 successProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
 successProgressBarFrame.ClipsDescendants = true
 
+local successProgressStroke = Instance.new("UIStroke")
+successProgressStroke.Thickness = 1
+successProgressStroke.Color = Color3.fromRGB(255, 255, 255)
+successProgressStroke.Transparency = 0.7
+successProgressStroke.Parent = successProgressBarFrame
+
+local successProgressGradient = Instance.new("UIGradient")
+successProgressGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 195, 125)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 195, 125))
+})
+successProgressGradient.Parent = successProgressBarFrame
+
 successProgressBar.Name = "progressBar"
 successProgressBar.Parent = successProgressBarFrame
 successProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+successProgressBar.BackgroundTransparency = 0.2
 successProgressBar.BorderSizePixel = 0
 successProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
@@ -689,19 +749,19 @@ warningTemplateFrame.Size = UDim2.new(1, 0, 1, 0)
 local warningGradient = Instance.new("UIGradient")
 warningGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 232, 197)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 232, 197):Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 232, 197):Lerp(Color3.fromRGB(200, 200, 200), 0.3))
 })
 warningGradient.Rotation = 45
 warningGradient.Parent = warningTemplateFrame
 
 local warningStroke = Instance.new("UIStroke")
-warningStroke.Thickness = 2
+warningStroke.Thickness = 3
 warningStroke.Color = Color3.fromRGB(234, 159, 53)
-warningStroke.Transparency = 0.3
+warningStroke.Transparency = 0.5
 warningStroke.Parent = warningTemplateFrame
 
 warningTemplateCorner.Name = "templateCorner"
-warningTemplateCorner.CornerRadius = UDim.new(0, 8)
+warningTemplateCorner.CornerRadius = UDim.new(0, 12)
 warningTemplateCorner.Parent = warningTemplateFrame
 
 warningSeverityFrame.Name = "severityFrame"
@@ -710,7 +770,7 @@ warningSeverityFrame.BackgroundColor3 = Color3.fromRGB(234, 159, 53)
 warningSeverityFrame.Size = UDim2.new(0, 12, 1, 0)
 
 warningSeverityCorner.Name = "severityCorner"
-warningSeverityCorner.CornerRadius = UDim.new(0, 8)
+warningSeverityCorner.CornerRadius = UDim.new(0, 12)
 warningSeverityCorner.Parent = warningSeverityFrame
 
 hideWarningSeverityCornerFrame.Name = "hideSeverityCornerFrame"
@@ -803,9 +863,24 @@ warningProgressBarFrame.Position = UDim2.new(0, 0, 1, -5)
 warningProgressBarFrame.Size = UDim2.new(1, 0, 0, 5)
 warningProgressBarFrame.ClipsDescendants = true
 
+local warningProgressStroke = Instance.new("UIStroke")
+warningProgressStroke.Thickness = 1
+warningProgressStroke.Color = Color3.fromRGB(255, 255, 255)
+warningProgressStroke.Transparency = 0.7
+warningProgressStroke.Parent = warningProgressBarFrame
+
+local warningProgressGradient = Instance.new("UIGradient")
+warningProgressGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(234, 159, 53)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(234, 159, 53))
+})
+warningProgressGradient.Parent = warningProgressBarFrame
+
 warningProgressBar.Name = "progressBar"
 warningProgressBar.Parent = warningProgressBarFrame
 warningProgressBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+warningProgressBar.BackgroundTransparency = 0.2
 warningProgressBar.BorderSizePixel = 0
 warningProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
@@ -839,8 +914,8 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
     notif = notif:Clone()
     notif.templateFrame.Position = UDim2.new(1, 50, 0, 0)
     notif.templateFrame.BackgroundTransparency = 1
-    notif.templateFrame.Size = UDim2.new(0.8, 0, 0.8, 0) 
-    notif.templateFrame.Rotation = 5 
+    notif.templateFrame.Size = UDim2.new(0.8, 0, 0.8, 0)
+    notif.templateFrame.Rotation = 5
 
     local function checkTextSize()
         local infoFrame = notif.templateFrame.informationFrame
@@ -867,7 +942,12 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             Size = UDim2.new(1, 0, 1, 0),
             Rotation = 0
         })
+        local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 24, 0, 24)
+        })
+        notif.templateFrame.image.Size = UDim2.new(0, 20, 0, 20)
         tweenIn:Play()
+        imageTween:Play()
     end
 
     local function closeNotif()
@@ -879,12 +959,32 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
                 Size = UDim2.new(0.8, 0, 0.8, 0),
                 Rotation = -5
             })
+            local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                Size = UDim2.new(0, 20, 0, 20)
+            })
             tweenOut:Play()
+            imageTween:Play()
             tweenOut.Completed:Wait()
             if callback then callback() end
             notif:Destroy()
         end)()
     end
+
+    notif.templateFrame.closeButton.MouseEnter:Connect(function()
+        local hoverTween = ts:Create(notif.templateFrame.closeButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 22, 0, 22),
+            ImageColor3 = Color3.fromRGB(255, 255, 255)
+        })
+        hoverTween:Play()
+    end)
+
+    notif.templateFrame.closeButton.MouseLeave:Connect(function()
+        local leaveTween = ts:Create(notif.templateFrame.closeButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 18, 0, 18),
+            ImageColor3 = notif.templateFrame.closeButton.ImageColor3
+        })
+        leaveTween:Play()
+    end)
 
     notif.templateFrame.closeButton.MouseButton1Click:Connect(closeNotif)
     notif.templateFrame.informationFrame.headingText.Text = heading
@@ -949,16 +1049,21 @@ function Notification:deleteTimeout(waitTime)
     self.IsClosing = true
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
-        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
             Position = UDim2.new(1, 50, 0, 0),
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 1, 0, 0.8)
+            Size = UDim2.new(0.8, 0, 0.8, 0),
+            Rotation = -5
+        })
+        local imageTween = ts:Create(self.Instance.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 20, 0, 20)
         })
         waitTime = waitTime or 3
         task.wait(waitTime)
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
         pcall(function() closeSound:Play() end)
         closeTween:Play()
+        imageTween:Play()
         closeTween.Completed:Wait()
         if self.Instance then
             self.Instance:Destroy()
@@ -971,13 +1076,18 @@ function Notification:delete()
     self.IsClosing = true
     coroutine.wrap(function()
         if not self.Instance or not self.Instance:FindFirstChild("templateFrame") then return end
-        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+        local closeTween = ts:Create(self.Instance.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
             Position = UDim2.new(1, 50, 0, 0),
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 1, 0, 0.8)
+            Size = UDim2.new(0.8, 0, 0.8, 0),
+            Rotation = -5
+        })
+        local imageTween = ts:Create(self.Instance.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 20, 0, 20)
         })
         pcall(function() closeSound:Play() end)
         closeTween:Play()
+        imageTween:Play()
         closeTween.Completed:Wait()
         if self.Instance then
             self.Instance:Destroy()
@@ -996,7 +1106,7 @@ function Notification:changeColor(primary, secondary, textColor)
             templateFrame.severityFrame.hideSeverityCornerFrame.BackgroundColor3 = primary
             templateFrame.UIGradient.Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, primary),
-                ColorSequenceKeypoint.new(1, primary:Lerp(Color3.fromRGB(255, 255, 255), 0.2))
+                ColorSequenceKeypoint.new(1, primary:Lerp(Color3.fromRGB(200, 200, 200), 0.3))
             })
         end
 
@@ -1009,6 +1119,11 @@ function Notification:changeColor(primary, secondary, textColor)
                 templateFrame.image.ImageColor3 = secondary
             end
             templateFrame.progressBarFrame.BackgroundColor3 = secondary
+            templateFrame.progressBarFrame.UIGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, secondary),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                ColorSequenceKeypoint.new(1, secondary)
+            })
         end
 
         if textColor then
