@@ -912,9 +912,18 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
     local notif = notificationTypes[notifType:lower()]
     assert(notif, "Notification type not valid\nValid Types: {\n\tError\n\tInfo\n\tMessage\n\tSuccess\n\tWarning\n}")
     notif = notif:Clone()
-    notif.templateFrame.Position = UDim2.new(1, 50, 0, 0)
-    notif.templateFrame.GroupTransparency = 1 -- Gunakan GroupTransparency untuk sinkron fade
+    notif.templateFrame.BackgroundTransparency = 1
+    notif.templateFrame.severityFrame.BackgroundTransparency = 1
+    notif.templateFrame.cornerHidingFrame.BackgroundTransparency = 1
+    notif.templateFrame.progressBarFrame.BackgroundTransparency = 1
+    notif.templateFrame.informationFrame.headingText.TextTransparency = 1
+    notif.templateFrame.informationFrame.bodyText.TextTransparency = 1
+    notif.templateFrame.closeButton.ImageTransparency = 1
+    if notif.templateFrame:FindFirstChild("image") then
+        notif.templateFrame.image.ImageTransparency = 1
+    end
     notif.templateFrame.Size = UDim2.new(0.8, 0, 0.8, 0)
+    notif.templateFrame.Position = UDim2.new(1, 50, 0, 0)
 
     local function checkTextSize()
         local infoFrame = notif.templateFrame.informationFrame
@@ -937,14 +946,39 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
         pcall(function() openSound:Play() end)
         local tweenIn = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             Position = UDim2.new(0, 0, 0, 0),
-            GroupTransparency = 0,
-            Size = UDim2.new(1, 0, 1, 0)
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 0
+        })
+        local severityTween = ts:Create(notif.templateFrame.severityFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0
+        })
+        local cornerHidingTween = ts:Create(notif.templateFrame.cornerHidingFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0
+        })
+        local progressBarTween = ts:Create(notif.templateFrame.progressBarFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0
+        })
+        local headingTween = ts:Create(notif.templateFrame.informationFrame.headingText, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            TextTransparency = 0
+        })
+        local bodyTween = ts:Create(notif.templateFrame.informationFrame.bodyText, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            TextTransparency = 0
+        })
+        local closeButtonTween = ts:Create(notif.templateFrame.closeButton, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            ImageTransparency = 0
         })
         tweenIn:Play()
+        severityTween:Play()
+        cornerHidingTween:Play()
+        progressBarTween:Play()
+        headingTween:Play()
+        bodyTween:Play()
+        closeButtonTween:Play()
         if notif.templateFrame:FindFirstChild("image") then
             task.wait(0.1) -- Delay kecil untuk ikon
             local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
-                Size = UDim2.new(0, 24, 0, 24)
+                Size = UDim2.new(0, 24, 0, 24),
+                ImageTransparency = 0
             })
             notif.templateFrame.image.Size = UDim2.new(0, 20, 0, 20)
             imageTween:Play()
@@ -956,13 +990,38 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             pcall(function() closeSound:Play() end)
             local tweenOut = ts:Create(notif.templateFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
                 Position = UDim2.new(1, 50, 0, 0),
-                GroupTransparency = 1,
-                Size = UDim2.new(0.8, 0, 0.8, 0)
+                Size = UDim2.new(0.8, 0, 0.8, 0),
+                BackgroundTransparency = 1
+            })
+            local severityTween = ts:Create(notif.templateFrame.severityFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                BackgroundTransparency = 1
+            })
+            local cornerHidingTween = ts:Create(notif.templateFrame.cornerHidingFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                BackgroundTransparency = 1
+            })
+            local progressBarTween = ts:Create(notif.templateFrame.progressBarFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                BackgroundTransparency = 1
+            })
+            local headingTween = ts:Create(notif.templateFrame.informationFrame.headingText, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                TextTransparency = 1
+            })
+            local bodyTween = ts:Create(notif.templateFrame.informationFrame.bodyText, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                TextTransparency = 1
+            })
+            local closeButtonTween = ts:Create(notif.templateFrame.closeButton, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                ImageTransparency = 1
             })
             tweenOut:Play()
+            severityTween:Play()
+            cornerHidingTween:Play()
+            progressBarTween:Play()
+            headingTween:Play()
+            bodyTween:Play()
+            closeButtonTween:Play()
             if notif.templateFrame:FindFirstChild("image") then
                 local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
-                    Size = UDim2.new(0, 20, 0, 20)
+                    Size = UDim2.new(0, 20, 0, 20),
+                    ImageTransparency = 1
                 })
                 imageTween:Play()
             end
