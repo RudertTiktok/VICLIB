@@ -949,18 +949,29 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
 
     local function checkTextSize()
         local infoFrame = notif.templateFrame.informationFrame
-        local requiredHeadingSize = txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).Y
-        local requiredBodySize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(notifsHolderFrame.AbsoluteSize.X - 80, 10000)).Y
-        local totalHeight = requiredHeadingSize + requiredBodySize + 15 + 5
+        local maxWidth = notifsHolderFrame.AbsoluteSize.X - 80 -- Lebar maksimum untuk teks
+        local headingTextSize = txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(maxWidth, 10000)).Y
+        local bodyTextSize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(maxWidth, 10000)).Y
+        local totalHeight = headingTextSize + bodyTextSize + 15 + 5 -- Padding dan margin
+
+        -- Pastikan teks body tidak melebihi 1000 karakter
+        if #infoFrame.bodyText.Text > 1000 then
+            warn("Body text exceeds 1000 characters, truncating to 1000 (Notification Library)")
+            infoFrame.bodyText.Text = string.sub(infoFrame.bodyText.Text, 1, 1000)
+            bodyTextSize = txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(maxWidth, 10000)).Y
+            totalHeight = headingTextSize + bodyTextSize + 15 + 5
+        end
+
+        -- Sesuaikan ukuran notifikasi
         if totalHeight > 50 then
             notif.Size = UDim2.new(1, 0, 0, totalHeight)
             notif.templateFrame.Size = UDim2.new(1, 0, 1, 0)
+            infoFrame.Size = UDim2.new(1, -80, 1, -10) -- Pastikan infoFrame cukup besar
         end
-        if txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).X + 80 > notifsHolderFrame.AbsoluteSize.X then
-            warn("Heading size is too long (Notification Library)")
-        end
-        if txtS:GetTextSize(infoFrame.bodyText.Text, infoFrame.bodyText.TextSize, infoFrame.bodyText.Font, Vector2.new(10000, 10000)).X + 80 > notifsHolderFrame.AbsoluteSize.X then
-            warn("Body size is too long (Notification Library)")
+
+        -- Peringatkan jika heading terlalu lebar
+        if txtS:GetTextSize(infoFrame.headingText.Text, infoFrame.headingText.TextSize, infoFrame.headingText.Font, Vector2.new(10000, 10000)).X > maxWidth then
+            warn("Heading text is too wide for the notification frame (Notification Library)")
         end
     end
 
