@@ -942,12 +942,14 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
             Size = UDim2.new(1, 0, 1, 0),
             Rotation = 0
         })
-        local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 24, 0, 24)
-        })
-        notif.templateFrame.image.Size = UDim2.new(0, 20, 0, 20)
         tweenIn:Play()
-        imageTween:Play()
+        if notif.templateFrame:FindFirstChild("image") then
+            local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+                Size = UDim2.new(0, 24, 0, 24)
+            })
+            notif.templateFrame.image.Size = UDim2.new(0, 20, 0, 20)
+            imageTween:Play()
+        end
     end
 
     local function closeNotif()
@@ -959,11 +961,13 @@ function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, 
                 Size = UDim2.new(0.8, 0, 0.8, 0),
                 Rotation = -5
             })
-            local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
-                Size = UDim2.new(0, 20, 0, 20)
-            })
             tweenOut:Play()
-            imageTween:Play()
+            if notif.templateFrame:FindFirstChild("image") then
+                local imageTween = ts:Create(notif.templateFrame.image, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                    Size = UDim2.new(0, 20, 0, 20)
+                })
+                imageTween:Play()
+            end
             tweenOut.Completed:Wait()
             if callback then callback() end
             notif:Destroy()
