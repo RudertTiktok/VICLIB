@@ -661,7 +661,7 @@ successHeadingText.TextSize = 16
 successHeadingText.TextXAlignment = Enum.TextXAlignment.Left
 successHeadingText.TextYAlignment = Enum.TextYAlignment.Bottom
 
-local successHeadingStroke = Instanceour Stroke = Instance.new("UIStroke")
+local successHeadingStroke = Instance.new("UIStroke")
 successHeadingStroke.Thickness = 1
 successHeadingStroke.Color = Color3.fromRGB(50, 195, 125)
 successHeadingStroke.Transparency = 0.5
