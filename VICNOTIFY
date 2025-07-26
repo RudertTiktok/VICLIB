@@ -885,20 +885,42 @@ warningProgressBar.BorderSizePixel = 0
 warningProgressBar.Size = UDim2.new(1, 0, 1, 0)
 
 local function scaleNotifHolderMaxNotifs()
-    local amountOfNotifsInFrame = math.floor(notifsHolderFrame.AbsoluteSize.Y / 50)
-    local notifsHolderFramePadding = amountOfNotifsInFrame * notifHolderListLayout.Padding.Offset
-    notifsHolderFrame.Size = UDim2.new(0.3, 0, 0, amountOfNotifsInFrame * 50 + notifsHolderFramePadding)
+    local maxNotifs = 6 
+    local notifHeight = 50 
+    local padding = notifHolderListLayout.Padding.Offset
+    local totalHeight = maxNotifs * notifHeight + (maxNotifs - 1) * padding
+    notifsHolderFrame.Size = UDim2.new(0.3, 0, 0, totalHeight)
 end
 
 local function deleteNotifsOutsideFrame()
-    if notifHolderListLayout.AbsoluteContentSize.Y < notifsHolderFrame.AbsoluteSize.Y then return end
-    for _, notif in pairs(notifsHolderFrame:GetChildren()) do
-        if not notif:IsA("Frame") then continue end
-        if notif.AbsolutePosition.Y + notif.AbsoluteSize.Y < notifsHolderFrame.AbsolutePosition.Y then
-            notif:Destroy()
+    local notifs = notifsHolderFrame:GetChildren()
+    local notifCount = 0
+    for _, child in pairs(notifs) do
+        if child:IsA("Frame") then
+            notifCount = notifCount + 1
+        end
+    end
+    if notifCount <= 6 then return end
+
+    
+    local sortedNotifs = {}
+    for _, notif in pairs(notifs) do
+        if notif:IsA("Frame") then
+            table.insert(sortedNotifs, notif)
+        end
+    end
+    table.sort(sortedNotifs, function(a, b)
+        return a.LayoutOrder < b.LayoutOrder
+    end)
+
+    -- Hapus notifikasi tertua hingga jumlahnya 6 atau kurang
+    for i = 1, notifCount - 6 do
+        if sortedNotifs[i] then
+            sortedNotifs[i]:Destroy()
         end
     end
 end
+
 
 function Notification.new(notifType, heading, body, autoRemove, autoRemoveTime, callback)
     local notificationTypes = {
