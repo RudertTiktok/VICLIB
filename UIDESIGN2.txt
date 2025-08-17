@@ -312,10 +312,12 @@ function Library:visible(window)
     end
 
     if window.Visible then
-        self:Close(window)
+        Animations:Close(window)
+        window.Visible = false
         stateLabel.Text = "Open"
     else
-        self:Open(window, Setup.Transparency) -- Gunakan animasi pembukaan
+        Animations:Open(window, Setup.Transparency)
+        window.Visible = true
         stateLabel.Text = "Close"
     end
 end
@@ -418,7 +420,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     mobile_button.Text = ""
     mobile_button.TextColor3 = Color3.fromRGB(0, 0, 0)
     mobile_button.TextSize = 14.000
-    mobile_button.Parent = Screen -- Parent ke Screen, bukan Window
+    mobile_button.Parent = Screen -- Parent ke Screen agar tetap terlihat saat Window disembunyikan
 
     local UICorner = Instance.new("UICorner")
     UICorner.CornerRadius = UDim.new(0, 13)
@@ -449,7 +451,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     State.Position = UDim2.new(0.646000028, 0, 0.5, 0)
     State.Size = UDim2.new(0, 64, 0, 15)
     State.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-    State.Text = "Open"
+    State.Text = "Close" -- Awalnya UI terbuka
     State.TextColor3 = Color3.fromRGB(255, 255, 255)
     State.TextScaled = true
     State.TextSize = 14.000
