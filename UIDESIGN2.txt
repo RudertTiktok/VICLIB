@@ -23,8 +23,7 @@ local Debris = cloneref(game:GetService('Debris'))
 local Stats = cloneref(game:GetService('Stats'))
 
 local Player = Players.LocalPlayer
-local Humanoid = Player.Character and Player.Character:WaitForChild("Humanoid")
-
+local Humanoid = nil
 
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -447,18 +446,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 		Setup.Keybind = Settings.MinimizeKeybind
 	end
 
-    local Logo = Instance.new("ImageLabel")
-    Logo.Name = "Logo"
-    Logo.Parent = Top
-    Logo.AnchorPoint = Vector2.new(0, 0.5)
-    Logo.BackgroundTransparency = 1
-    Logo.BorderSizePixel = 0
-    Logo.Position = UDim2.new(0, 12, 0.5, 0)
-    Logo.Size = UDim2.new(0, 28, 0, 28)
-    Logo.Image = "rbxassetid://131276823052425"
-    Logo.ImageColor3 = Color3.fromRGB(100, 100, 150)
-    Logo.ImageTransparency = 0
-    Logo.ZIndex = 3
+    
 
     
     local TextLabel = Instance.new("TextLabel")
@@ -466,10 +454,10 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     TextLabel.AnchorPoint = Vector2.new(0, 0.5)
     TextLabel.BackgroundTransparency = 1
     TextLabel.BorderSizePixel = 0
-    TextLabel.Position = UDim2.new(0, 44, 0.5, 0)
+    TextLabel.Position = UDim2.new(0, 60, 0.5, 0)
     TextLabel.Size = UDim2.new(0, 100, 0, 16)
     TextLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-    TextLabel.Text = "VicoX"
+    TextLabel.Text = getgenv().namehub or "VicoX"
     TextLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
     TextLabel.TextSize = 13
     TextLabel.TextScaled = true
@@ -575,13 +563,13 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     local InfoBase = Instance.new("Frame")
     InfoBase.Name = "InfoBase"
-    InfoBase.Parent = Holder -- Parent ke Holder (bagian utama Window)
+    InfoBase.Parent = Holder
     InfoBase.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     InfoBase.BorderSizePixel = 1
     InfoBase.BorderColor3 = Color3.fromRGB(50, 50, 80)
-    InfoBase.Position = UDim2.new(0.5, 0, 1, -15)
+    InfoBase.Position = UDim2.new(0, 10, 0, 10) -- Pojok kiri atas
     InfoBase.Size = UDim2.new(0, 200, 0, 50)
-    InfoBase.AnchorPoint = Vector2.new(0.5, 1)
+    InfoBase.AnchorPoint = Vector2.new(0, 0)
     InfoBase.ClipsDescendants = true
 
     local InfoBaseCorner = Instance.new("UICorner")
@@ -589,12 +577,13 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     InfoBaseCorner.Parent = InfoBase
 
     local InfoBaseGradient = Instance.new("UIGradient")
-    InfoBaseGradient.Color = secondaryGradient -- Asumsi secondaryGradient didefinisikan
+    InfoBaseGradient.Color = secondaryGradient
     InfoBaseGradient.Rotation = 45
     InfoBaseGradient.Parent = InfoBase
 
     local InfoGlow = Instance.new("ImageLabel")
     InfoGlow.Name = "InfoGlow"
+    InfoBase.ZIndex = 2
     InfoGlow.Parent = InfoBase
     InfoGlow.BackgroundTransparency = 1
     InfoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -603,6 +592,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     InfoGlow.ImageTransparency = 0.6
     InfoGlow.ImageColor3 = Color3.fromRGB(100, 100, 150)
     InfoGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    InfoGlow.ZIndex = 1
 
     local InfoInner = Instance.new("Frame")
     InfoInner.Name = "InfoInner"
@@ -613,13 +603,14 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     InfoInner.Position = UDim2.new(0.5, 0, 0.5, 0)
     InfoInner.AnchorPoint = Vector2.new(0.5, 0.5)
     InfoInner.ClipsDescendants = true
+    InfoInner.ZIndex = 2
 
     local InfoInnerCorner = Instance.new("UICorner")
     InfoInnerCorner.CornerRadius = UDim.new(0, 8)
     InfoInnerCorner.Parent = InfoInner
 
     local InfoInnerGradient = Instance.new("UIGradient")
-    InfoInnerGradient.Color = primaryGradient -- Asumsi primaryGradient didefinisikan
+    InfoInnerGradient.Color = primaryGradient
     InfoInnerGradient.Rotation = 45
     InfoInnerGradient.Parent = InfoInner
 
@@ -631,85 +622,57 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     UIPadding.Parent = InfoInner
 
     local Avatar = Instance.new("ImageLabel")
-Avatar.Name = "Avatar"
-Avatar.Parent = InfoInner
-Avatar.BackgroundTransparency = 1
-Avatar.Position = UDim2.new(0, 0, 0.5, 0)
-Avatar.Size = UDim2.new(0, 36, 0, 36)
-Avatar.AnchorPoint = Vector2.new(0, 0.5)
-local thumbType = Enum.ThumbnailType.AvatarThumbnail
-local thumbSize = Enum.ThumbnailSize.Size150x150
-local success, content = pcall(function()
-    return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
-end)
-if success then
-    Avatar.Image = content
-else
-    Avatar.Image = "rbxassetid://17290697757"
-end
-
-local AvatarCorner = Instance.new("UICorner")
-AvatarCorner.CornerRadius = UDim.new(0, 8)
-AvatarCorner.Parent = Avatar
-
-local HeartIcon = Instance.new("ImageLabel")
-HeartIcon.Name = "HeartIcon"
-HeartIcon.Parent = InfoInner
-HeartIcon.BackgroundTransparency = 1
-HeartIcon.Position = UDim2.new(0, 40, 0.5, 0)
-HeartIcon.Size = UDim2.new(0, 14, 0, 14)
-HeartIcon.AnchorPoint = Vector2.new(0, 0.5)
-HeartIcon.Image = "rbxassetid://10653372143"
-HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
-HeartIcon.ImageTransparency = 0.3
-
-local PlayerInfo = Instance.new("TextLabel")
-PlayerInfo.Name = "PlayerInfo"
-PlayerInfo.Parent = InfoInner
-PlayerInfo.BackgroundTransparency = 1
-PlayerInfo.Position = UDim2.new(0, 60, 0.5, 0)
-PlayerInfo.Size = UDim2.new(0, 120, 0, 14)
-PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
-PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
-PlayerInfo.TextSize = 12
-PlayerInfo.TextScaled = true
-PlayerInfo.TextWrapped = true
-PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
-PlayerInfo.Text = "Loading..."
-
-local function updatePlayerInfo()
-    if not Player.Character or not Humanoid or not Humanoid.Parent or Humanoid.Health == nil then
-        PlayerInfo.Text = "Loading..."
-        PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
-        HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
-        return
-    end
-    local health = math.floor(Humanoid.Health)
-    PlayerInfo.Text = string.format("%s | %d", Player.Name, health)
-    local healthPercentage = health / Humanoid.MaxHealth
-    if healthPercentage > 0.6 then
-        PlayerInfo.TextColor3 = Color3.fromRGB(100, 255, 100)
-        HeartIcon.ImageColor3 = Color3.fromRGB(100, 255, 100)
-    elseif healthPercentage > 0.2 then
-        PlayerInfo.TextColor3 = Color3.fromRGB(255, 255, 100)
-        HeartIcon.ImageColor3 = Color3.fromRGB(255, 255, 100)
+    Avatar.Name = "Avatar"
+    Avatar.Parent = InfoInner
+    Avatar.BackgroundTransparency = 1
+    Avatar.Position = UDim2.new(0, 0, 0.5, 0)
+    Avatar.Size = UDim2.new(0, 36, 0, 36)
+    Avatar.AnchorPoint = Vector2.new(0, 0.5)
+    Avatar.ZIndex = 3
+    Avatar.Visible = true
+    local thumbType = Enum.ThumbnailType.AvatarThumbnail
+    local thumbSize = Enum.ThumbnailSize.Size150x150
+    local success, content = pcall(function()
+        return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
+    end)
+    if success then
+        Avatar.Image = content
+        print("Avatar loaded successfully for user", Player.UserId)
     else
-        PlayerInfo.TextColor3 = Color3.fromRGB(255, 100, 100)
-        HeartIcon.ImageColor3 = Color3.fromRGB(255, 100, 100)
+        Avatar.Image = "rbxassetid://17290697757"
+        warn("Failed to load avatar for user", Player.UserId, "- using fallback image")
     end
-end
 
+    local AvatarCorner = Instance.new("UICorner")
+    AvatarCorner.CornerRadius = UDim.new(0, 8)
+    AvatarCorner.Parent = Avatar
 
-if Player.Character then
-    Humanoid = Player.Character:WaitForChild("Humanoid", 5) -- Tunggu hingga 5 detik
-    if Humanoid then
-        updatePlayerInfo()
+    local PlayerInfo = Instance.new("TextLabel")
+    PlayerInfo.Name = "PlayerInfo"
+    PlayerInfo.Parent = InfoInner
+    PlayerInfo.BackgroundTransparency = 1
+    PlayerInfo.Position = UDim2.new(0, 44, 0.5, 0) -- Disesuaikan karena HeartIcon dihapus
+    PlayerInfo.Size = UDim2.new(0, 150, 0, 14) -- Diperlebar untuk nama panjang
+    PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
+    PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
+    PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
+    PlayerInfo.TextSize = 12
+    PlayerInfo.TextScaled = true
+    PlayerInfo.TextWrapped = true
+    PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
+    PlayerInfo.Text = "Loading..."
+    PlayerInfo.ZIndex = 3
+
+    local function updatePlayerInfo()
+        if not Player then
+            PlayerInfo.Text = "Loading..."
+            return
+        end
+        PlayerInfo.Text = Player.Name
     end
-end
 
-    Humanoid.HealthChanged:Connect(updatePlayerInfo)    
-
+    
+    updatePlayerInfo()
 
 	--// Animate
 	local Close = function()
