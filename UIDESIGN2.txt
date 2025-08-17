@@ -2608,3 +2608,5 @@ end
     self.Mobile = mobile_button
     return TabManager
 end
+
+return Library
