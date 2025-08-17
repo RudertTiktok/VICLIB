@@ -708,15 +708,6 @@ if Player.Character then
     end
 end
 
-
-Player.CharacterAdded:Connect(function(char)
-    Humanoid = char:WaitForChild("Humanoid", 5) -- Tunggu hingga 5 detik
-    if Humanoid then
-        updatePlayerInfo()
-        Humanoid.HealthChanged:Connect(updatePlayerInfo)
-    end
-end)
-   
     Humanoid.HealthChanged:Connect(updatePlayerInfo)    
 
 
