@@ -433,168 +433,167 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     
 
-    local function Color3ToHSB(color)
-        local r, g, b = color.R, color.G, color.B
-        local max = math.max(r, g, b)
-        local min = math.min(r, g, b)
-        local delta = max - min
+     -- Utility
+local function Color3ToHSB(color)
+    local r, g, b = color.R, color.G, color.B
+    local max = math.max(r, g, b)
+    local min = math.min(r, g, b)
+    local delta = max - min
 
-        local h = 0
-        if delta ~= 0 then
-            if max == r then
-                h = (g - b) / delta % 6
-            elseif max == g then
-                h = (b - r) / delta + 2
-            else
-                h = (r - g) / delta + 4
-            end
-            h = h * 60
+    local h = 0
+    if delta ~= 0 then
+        if max == r then
+            h = (g - b) / delta % 6
+        elseif max == g then
+            h = (b - r) / delta + 2
         else
-            h = 0
+            h = (r - g) / delta + 4
         end
-
-        local s = (max == 0) and 0 or (delta / max)
-        local v = max
-
-        return {
-            h = math.floor(h + 0.5),
-            s = s,
-            b = v
-        }
+        h = h * 60
+    else
+        h = 0
     end
 
-    local function GetPerceivedBrightness(color)
-        local r = color.R
-        local g = color.G
-        local b = color.B
-        return 0.299 * r + 0.587 * g + 0.114 * b
-    end
+    local s = (max == 0) and 0 or (delta / max)
+    local v = max
 
-    local function GetTextColorForHSB(color)
-        local brightness = GetPerceivedBrightness(color)
-        return brightness > 0.5 and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
-    end
-
-    -- Buat Tag
-    local TagModule = {
-        Title = getgenv().namehub or Settings.Title or "VicoX Hub", -- Fallback eksplisit
-        Color = Color3.fromRGB(255, 215, 0), -- Warna emas
-        TagFrame = nil,
-        Height = 26,
-        Padding = 8,
-        TextSize = 16, -- Lebih besar untuk visibilitas
+    return {
+        h = math.floor(h + 0.5),
+        s = s,
+        b = v
     }
+end
 
-    local TagTitle = Instance.new("TextLabel")
-    TagTitle.BackgroundTransparency = 1
-    TagTitle.Size = UDim2.new(1, -16, 0, TagModule.Height) -- Lebar menyesuaikan TagFrame
-    TagTitle.Position = UDim2.new(0, 8, 0, 0) -- Sesuaikan dengan padding
-    TagTitle.TextSize = TagModule.TextSize
-    TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-    TagTitle.Text = TagModule.Title
-    TagTitle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Hitam untuk kontras
-    TagTitle.TextScaled = false
-    TagTitle.TextWrapped = true
-    TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
-    TagTitle.ZIndex = 3
-    TagTitle.Visible = true
+local function GetPerceivedBrightness(color)
+    local r = color.R
+    local g = color.G
+    local b = color.B
+    return 0.299 * r + 0.587 * g + 0.114 * b
+end
 
-    local TagFrame = Instance.new("Frame")
-    TagFrame.Name = "TagFrame"
-    TagFrame.BackgroundColor3 = TagModule.Color
-    TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height) -- Posisi sudah pas
-    TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
-    TagFrame.AnchorPoint = Vector2.new(0, 0.5)
-    TagFrame.Parent = Top
-    TagFrame.ZIndex = 2
-    TagFrame.ClipsDescendants = true -- Aktifkan setelah teks terlihat
-    TagFrame.Visible = true
+local function GetTextColorForHSB(color)
+    local brightness = GetPerceivedBrightness(color)
+    return brightness > 0.5 and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+end
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 8)
-    UICorner.Parent = TagFrame
+local TagModule = {
+    Title = getgenv().namehub or Settings.Title or "VicoX Hub",
+    Color = Color3.fromRGB(255, 215, 0),
+    TagFrame = nil,
+    Height = 26,
+    Padding = 8,
+    TextSize = 16,
+}
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Thickness = 1
-    UIStroke.Color = Color3.fromRGB(50, 50, 50)
-    UIStroke.Transparency = 0.2
-    UIStroke.Parent = TagFrame
 
-    local TagShadow = Instance.new("ImageLabel")
-    TagShadow.Name = "TagShadow"
-    TagShadow.Parent = TagFrame
-    TagShadow.BackgroundTransparency = 1
-    TagShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    TagShadow.Size = UDim2.new(1, 20, 1, 20)
-    TagShadow.Image = "rbxassetid://17183270335"
-    TagShadow.ImageTransparency = 0.4
-    TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    TagShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    TagShadow.ZIndex = 0 -- Pastikan di belakang
-    TagShadow.Visible = true
+local TagFrame = Instance.new("Frame")
+TagFrame.Name = "TagFrame"
+TagFrame.BackgroundColor3 = TagModule.Color
+TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height)
+TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
+TagFrame.AnchorPoint = Vector2.new(0, 0.5)
+TagFrame.Parent = Top
+TagFrame.ZIndex = 2
+TagFrame.ClipsDescendants = true
+TagFrame.Visible = true
+TagModule.TagFrame = TagFrame
 
-    local UIPadding = Instance.new("UIPadding")
-    UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
-    UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
-    UIPadding.Parent = TagFrame
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = TagFrame
 
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-    UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-    UIListLayout.Parent = TagFrame
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Thickness = 1
+UIStroke.Color = Color3.fromRGB(50, 50, 50)
+UIStroke.Transparency = 0.2
+UIStroke.Parent = TagFrame
 
-    -- Efek Cahaya Bergerak
-    local UIGradient = Instance.new("UIGradient")
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
+UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
+UIPadding.Parent = TagFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout.Parent = TagFrame
+
+-- TITLE
+local TagTitle = Instance.new("TextLabel")
+TagTitle.BackgroundTransparency = 1
+TagTitle.Size = UDim2.new(1, -16, 0, TagModule.Height)
+TagTitle.Position = UDim2.new(0, 8, 0, 0)
+TagTitle.TextSize = TagModule.TextSize
+TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
+TagTitle.Text = TagModule.Title
+TagTitle.TextColor3 = GetTextColorForHSB(TagModule.Color)
+TagTitle.TextScaled = false
+TagTitle.TextWrapped = true
+TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
+TagTitle.ZIndex = 3
+TagTitle.Visible = true
+TagTitle.LayoutOrder = 1
+TagTitle.Parent = TagFrame
+
+local TagShadow = Instance.new("ImageLabel")
+TagShadow.Name = "TagShadow"
+TagShadow.Parent = Top
+TagShadow.BackgroundTransparency = 1
+TagShadow.Position = TagFrame.Position
+TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 20, 0, TagFrame.Size.Y.Offset + 20)
+TagShadow.AnchorPoint = TagFrame.AnchorPoint
+TagShadow.Image = "rbxassetid://17183270335"
+TagShadow.ImageTransparency = 0.5
+TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+TagShadow.ZIndex = 0
+TagShadow.Visible = true
+
+-- CAHAYA SHIMMER
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, TagModule.Color),
+    ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
+    ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
+    ColorSequenceKeypoint.new(1, TagModule.Color)
+})
+UIGradient.Transparency = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 0),
+    NumberSequenceKeypoint.new(0.45, 0.2),
+    NumberSequenceKeypoint.new(0.55, 0.2),
+    NumberSequenceKeypoint.new(1, 0)
+})
+UIGradient.Rotation = 30
+UIGradient.Parent = TagFrame
+
+
+local RunService = game:GetService("RunService")
+RunService.RenderStepped:Connect(function()
+    if TagFrame.Parent then
+        local t = (tick() % 2) / 2
+        UIGradient.Offset = Vector2.new(t * 2 - 1, 0)
+    end
+end)
+
+
+function TagModule:SetTitle(text)
+    TagModule.Title = text
+    TagTitle.Text = text
+end
+
+function TagModule:SetColor(color)
+    TagModule.Color = color
+    Services.Tween:Create(TagFrame, TweenInfo.new(0.1), {BackgroundColor3 = color}):Play()
+    Services.Tween:Create(TagTitle, TweenInfo.new(0.1), {TextColor3 = GetTextColorForHSB(color)}):Play()
     UIGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 235, 80)), -- Sorotan lembut
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 215, 0))
+        ColorSequenceKeypoint.new(0, color),
+        ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
+        ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
+        ColorSequenceKeypoint.new(1, color)
     })
-    UIGradient.Offset = Vector2.new(0, 0)
-    UIGradient.Rotation = 0
-    UIGradient.Parent = TagFrame
+end
 
-    -- Animasi Cahaya
-    local RunService = Services.Run and Services.Run or game:GetService("RunService")
-    if not RunService then
-        warn("Debug: RunService not available, using task.spawn for light animation")
-        task.spawn(function()
-            while TagFrame.Parent do
-                UIGradient.Offset = Vector2.new((tick() % 2) - 1, 0)
-                task.wait(1/60)
-            end
-        end)
-    else        
-        local connection = RunService.RenderStepped:Connect(function()
-            if TagFrame.Parent then
-                UIGradient.Offset = Vector2.new((tick() % 2) - 1, 0)
-            else
-                connection:Disconnect()
-            end
-        end)
-        table.insert(self.connections, connection)
-    end
+Options.Tag = TagModule
 
-    TagTitle.Parent = TagFrame
-    TagModule.TagFrame = TagFrame
-
-    function TagModule:SetTitle(text)
-        TagModule.Title = text
-        TagTitle.Text = text        
-    end
-
-    function TagModule:SetColor(color)
-        TagModule.Color = color
-        Services.Tween:Create(TagFrame, TweenInfo.new(0.06), {BackgroundColor3 = color}):Play()
-        Services.Tween:Create(TagTitle, TweenInfo.new(0.06), {TextColor3 = GetTextColorForHSB(color)}):Play()
-        UIGradient.Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, color),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 235, 80)),
-            ColorSequenceKeypoint.new(1, color)
-        })    
-    end
-
-    Options.Tag = TagModule
     
     
     local mobile_button = Instance.new("TextButton")
