@@ -300,6 +300,26 @@ function Animations:Component(Component: any, Custom: boolean)
 	end)
 end
 
+function Library:visible(window)
+    if not window then
+        warn("Error: No window provided to Library:visible")
+        return
+    end
+    local stateLabel = window.Parent:FindFirstChild("Mobile") and window.Parent.Mobile:FindFirstChild("State")
+    if not stateLabel then
+        warn("Error: Mobile button or State label not found")
+        return
+    end
+
+    if window.Visible then
+        self:Close(window)
+        stateLabel.Text = "Open"
+    else
+        self:Open(window, Setup.Transparency) -- Gunakan animasi pembukaan
+        stateLabel.Text = "Close"
+    end
+end
+
 function Library:disconnect()
     for _, value in pairs(self.connections) do
         if value then
@@ -383,6 +403,102 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 	if Settings.MinimizeKeybind then
 		Setup.Keybind = Settings.MinimizeKeybind
 	end
+
+    
+    local mobile_button = Instance.new("TextButton")
+    mobile_button.Name = "Mobile"
+    mobile_button.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
+    mobile_button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    mobile_button.BorderSizePixel = 0
+    mobile_button.Position = UDim2.new(0.0210955422, 0, 0.91790241, 0)
+    mobile_button.Size = UDim2.new(0, 122, 0, 38)
+    mobile_button.AutoButtonColor = false
+    mobile_button.Modal = true
+    mobile_button.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
+    mobile_button.Text = ""
+    mobile_button.TextColor3 = Color3.fromRGB(0, 0, 0)
+    mobile_button.TextSize = 14.000
+    mobile_button.Parent = Screen -- Parent ke Screen, bukan Window
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 13)
+    UICorner.Parent = mobile_button
+
+    local shadowMobile = Instance.new("ImageLabel")
+    shadowMobile.Name = "Shadow"
+    shadowMobile.Parent = mobile_button
+    shadowMobile.AnchorPoint = Vector2.new(0.5, 0.5)
+    shadowMobile.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    shadowMobile.BackgroundTransparency = 1.000
+    shadowMobile.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    shadowMobile.BorderSizePixel = 0
+    shadowMobile.Position = UDim2.new(0.5, 0, 0.5, 0)
+    shadowMobile.Size = UDim2.new(0, 144, 0, 58)
+    shadowMobile.ZIndex = 0
+    shadowMobile.Image = "rbxassetid://17183270335"
+    shadowMobile.ImageTransparency = 0.200
+
+    local State = Instance.new("TextLabel")
+    State.Name = "State"
+    State.Parent = mobile_button
+    State.AnchorPoint = Vector2.new(0.5, 0.5)
+    State.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    State.BackgroundTransparency = 1.000
+    State.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    State.BorderSizePixel = 0
+    State.Position = UDim2.new(0.646000028, 0, 0.5, 0)
+    State.Size = UDim2.new(0, 64, 0, 15)
+    State.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
+    State.Text = "Open"
+    State.TextColor3 = Color3.fromRGB(255, 255, 255)
+    State.TextScaled = true
+    State.TextSize = 14.000
+    State.TextWrapped = true
+    State.TextXAlignment = Enum.TextXAlignment.Left
+
+    local Icon = Instance.new("ImageLabel")
+    Icon.Name = "Icon"
+    Icon.Parent = mobile_button
+    Icon.AnchorPoint = Vector2.new(0.5, 0.5)
+    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Icon.BackgroundTransparency = 1.000
+    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Icon.BorderSizePixel = 0
+    Icon.Position = UDim2.new(0.268000007, 0, 0.5, 0)
+    Icon.Size = UDim2.new(0, 15, 0, 15)
+    Icon.Image = "rbxassetid://17183279677"
+
+    
+    mobile_button.MouseButton1Click:Connect(function()
+        self:visible(Window)
+    end)
+
+    
+    Animations:Component(mobile_button, true)
+
+    
+    local Close = function()
+        if Opened then
+            if BlurEnabled then
+                Blurs[Settings.Title].root.Parent = nil
+            end
+            Opened = false
+            Animations:Close(Window)
+            Window.Visible = false
+            if Screen:FindFirstChild("Mobile") then
+                Screen.Mobile.State.Text = "Open"
+            end
+        else
+            Animations:Open(Window, Setup.Transparency)
+            Opened = true
+            if BlurEnabled then
+                Blurs[Settings.Title].root.Parent = workspace.CurrentCamera
+            end
+            if Screen:FindFirstChild("Mobile") then
+                Screen.Mobile.State.Text = "Close"
+            end
+        end
+    end
 
 	--// Animate
 	local Close = function()
