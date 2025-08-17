@@ -662,39 +662,53 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 		})       
 	end
 	
-	function Options:AddInput(Settings: { Title: string, Description: string, Tab: Instance, Callback: any })
-    local Input = Clone(Components["Input"])
-    if not Input then
-        warn("Error: Components['Input'] is nil. Check UI asset structure.")
-        return
-    end
+	function Options:AddKeybind(Settings: { Title: string, Description: string, Tab: Instance, Callback: any }) 
+		local Dropdown = Clone(Components["Keybind"]);
+		local Title, Description = Options:GetLabels(Dropdown);
+		local Bind = Dropdown["Main"].Options;
+		
+		local Mouse = { Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2, Enum.UserInputType.MouseButton3 }; 
+		local Types = { 
+			["Mouse"] = "Enum.UserInputType.MouseButton", 
+			["Key"] = "Enum.KeyCode." 
+		}
+		
+		Connect(Dropdown.MouseButton1Click, function()
+			local Time = tick();
+			local Detect, Finished
+			
+			SetProperty(Bind, { Text = "..." });
+			Detect = Connect(game.UserInputService.InputBegan, function(Key, Focused) 
+				local InputType = (Key.UserInputType);
+				
+				if not Finished and not Focused then
+					Finished = (true)
+					
+					if table.find(Mouse, InputType) then
+						Settings.Callback(Key);
+						SetProperty(Bind, {
+							Text = tostring(InputType):gsub(Types.Mouse, "MB")
+						})
+					elseif InputType == Enum.UserInputType.Keyboard then
+						Settings.Callback(Key);
+						SetProperty(Bind, {
+							Text = tostring(Key.KeyCode):gsub(Types.Key, "")
+						})
+					end
+				end 
+			end)
+		end)
 
-    local Title, Description = Options:GetLabels(Input)
-    local TextBox = Input and Input["Main"] and Input["Main"]["Input"]
+		Animations:Component(Dropdown);
+		SetProperty(Title, { Text = Settings.Title });
+		SetProperty(Description, { Text = Settings.Description });
+		SetProperty(Dropdown, {
+			Name = Settings.Title,
+			Parent = Settings.Tab,
+			Visible = true,
+		})
+	end
 
-    
-    Library.flags[Settings.Title] = Library.flags[Settings.Title] or ""
-    
-    Connect(Input.MouseButton1Click, function()
-        TextBox:CaptureFocus()
-    end)
-
-    Connect(TextBox.FocusLost, function()
-        Library.flags[Settings.Title] = TextBox.Text
-        Library:save_flags()
-        Settings.Callback(TextBox.Text)
-    end)
-
-    Animations:Component(Input)
-    SetProperty(Title, { Text = Settings.Title })
-    SetProperty(Description, { Text = Settings.Description })
-    SetProperty(Input, {
-        Name = Settings.Title,
-        Parent = Settings.Tab,
-        Visible = true,
-    })
-    TextBox.Text = Library.flags[Settings.Title]
-end
 
 	function Options:AddDropdown(Settings: { Title: string, Description: string, Options: {}, Tab: Instance, Callback: any }) 
 		local Dropdown = Clone(Components["Dropdown"]);
