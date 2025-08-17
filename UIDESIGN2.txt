@@ -546,15 +546,15 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     end
 
     
-        local InfoBase = Instance.new("Frame")
+     local InfoBase = Instance.new("Frame")
     InfoBase.Name = "InfoBase"
     InfoBase.Parent = Holder
     InfoBase.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     InfoBase.BorderSizePixel = 1
     InfoBase.BorderColor3 = Color3.fromRGB(50, 50, 80)
-    InfoBase.Position = UDim2.new(0, 10, 0, 10) -- Pojok kiri atas
+    InfoBase.Position = UDim2.new(0, 10, 1, -60) -- Pojok kiri bawah
     InfoBase.Size = UDim2.new(0, 200, 0, 50)
-    InfoBase.AnchorPoint = Vector2.new(0, 0)
+    InfoBase.AnchorPoint = Vector2.new(0, 1)
     InfoBase.ClipsDescendants = true
     InfoBase.ZIndex = 2
 
@@ -615,21 +615,34 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     Avatar.AnchorPoint = Vector2.new(0, 0.5)
     Avatar.ZIndex = 10
     Avatar.Visible = true
+
+    -- Coba muat avatar dengan retry mechanism
     local thumbType = Enum.ThumbnailType.AvatarThumbnail
     local thumbSize = Enum.ThumbnailSize.Size150x150
+    local maxRetries = 3
+    local retryDelay = 1
+    local success, content = false, nil
+
     if LocalPlayer then
-        local success, content = pcall(function()
-            return Players:GetUserThumbnailAsync(LocalPlayer.UserId, thumbType, thumbSize)
-        end)
-        if success then
-            Avatar.Image = content
-            print("Avatar loaded successfully for user", LocalPlayer.UserId)
-        else
-            Avatar.Image = "rbxassetid://503476800" -- Fallback ke ID valid
-            warn("Failed to load avatar for user", LocalPlayer.UserId or "nil", "- using fallback image")
+        for i = 1, maxRetries do
+            success, content = pcall(function()
+                return Players:GetUserThumbnailAsync(LocalPlayer.UserId, thumbType, thumbSize)
+            end)
+            if success then
+                Avatar.Image = content
+                print("Avatar loaded successfully for user", LocalPlayer.UserId, "on attempt", i)
+                break
+            else
+                warn("Attempt", i, "failed to load avatar for user", LocalPlayer.UserId, "- error:", content)
+                task.wait(retryDelay)
+            end
+        end
+        if not success then
+            Avatar.Image = "rbxassetid://0" -- Fallback ke placeholder default Roblox
+            warn("Failed to load avatar for user", LocalPlayer.UserId, "after", maxRetries, "attempts - using fallback image")
         end
     else
-        Avatar.Image = "rbxassetid://503476800"
+        Avatar.Image = "rbxassetid://0"
         warn("LocalPlayer not initialized, using fallback avatar image")
     end
 
@@ -671,7 +684,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         LocalPlayer.CharacterAdded:Connect(function(char)
             updatePlayerInfo()
         end)
-    end
+    end       
 
 
 	--// Animate
@@ -1289,23 +1302,25 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 		},
 	}
 
-	function Options:SetTheme(Info)
-		Theme = Info or Theme
-
-		Window.BackgroundColor3 = Theme.Primary
-		Holder.BackgroundColor3 = Theme.Secondary
-		Window.UIStroke.Color = Theme.Shadow
-
-		for Index, Descendant in next, Screen:GetDescendants() do
-			local Name, Class =  Themes.Names[Descendant.Name],  Themes.Classes[Descendant.ClassName]
-
-			if Name then
-				Name(Descendant);
-			elseif Class then
-				Class(Descendant);
-			end
-		end
-	end
+	function Options:SetTheme(theme)
+    if Top and Top:FindFirstChild("TextLabel") then
+        Top.TextLabel.TextColor3 = theme.Title
+    end
+    if Holder and Holder:FindFirstChild("InfoBase") then
+        Holder.InfoBase.BackgroundColor3 = theme.Secondary
+        Holder.InfoBase.BorderColor3 = theme.Outline
+        Holder.InfoBase.InfoGlow.ImageColor3 = theme.Icon
+        Holder.InfoBase.InfoInner.BackgroundColor3 = theme.Primary
+        if Holder.InfoBase.InfoInner:FindFirstChild("PlayerInfo") then
+            Holder.InfoBase.InfoInner.PlayerInfo.TextColor3 = theme.Title
+        end
+    end
+    if Screen and Screen:FindFirstChild("Mobile") then
+        Screen.Mobile.BackgroundColor3 = theme.Secondary
+        Screen.Mobile.State.TextColor3 = theme.Title
+        Screen.Mobile.Icon.ImageColor3 = theme.Icon
+    end
+end
 
 	--// Changing Settings
 
