@@ -433,21 +433,114 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     
 
     
-    local TextLabel = Instance.new("TextLabel")
-    TextLabel.Parent = Top
-    TextLabel.AnchorPoint = Vector2.new(0, 0.5)
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.BorderSizePixel = 0
-    TextLabel.Position = UDim2.new(0, 60, 0.5, 0)
-    TextLabel.Size = UDim2.new(0, 100, 0, 16)
-    TextLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-    TextLabel.Text = getgenv().namehub or "VicoX"
-    TextLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
-    TextLabel.TextSize = 13
-    TextLabel.TextScaled = true
-    TextLabel.TextWrapped = true
-    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-    TextLabel.ZIndex = 3
+    local function Color3ToHSB(color)
+        local r, g, b = color.R, color.G, color.B
+        local max = math.max(r, g, b)
+        local min = math.min(r, g, b)
+        local delta = max - min
+
+        local h = 0
+        if delta ~= 0 then
+            if max == r then
+                h = (g - b) / delta % 6
+            elseif max == g then
+                h = (b - r) / delta + 2
+            else
+                h = (r - g) / delta + 4
+            end
+            h = h * 60
+        else
+            h = 0
+        end
+
+        local s = (max == 0) and 0 or (delta / max)
+        local v = max
+
+        return {
+            h = math.floor(h + 0.5),
+            s = s,
+            b = v
+        }
+    end
+
+    local function GetPerceivedBrightness(color)
+        local r = color.R
+        local g = color.G
+        local b = color.B
+        return 0.299 * r + 0.587 * g + 0.114 * b
+    end
+
+    local function GetTextColorForHSB(color)
+        local hsb = Color3ToHSB(color)
+        local h, s, b = hsb.h, hsb.s, hsb.b
+        if GetPerceivedBrightness(color) > 0.5 then
+            return Color3.fromHSV(h / 360, 0, 0.05)
+        else
+            return Color3.fromHSV(h / 360, 0, 0.98)
+        end
+    end
+
+    
+    local TagModule = {
+        Title = getgenv().namehub or "VicoX",
+        Color = Color3.fromRGB(200, 200, 255),
+        TagFrame = nil,
+        Height = 26,
+        Padding = 10,
+        TextSize = 14,
+    }
+
+    local TagTitle = Instance.new("TextLabel")
+    TagTitle.BackgroundTransparency = 1
+    TagTitle.Size = UDim2.new(0, 0, 0, 0) -- AutomaticSize ditangani UIListLayout
+    TagTitle.TextSize = TagModule.TextSize
+    TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
+    TagTitle.Text = TagModule.Title
+    TagTitle.TextColor3 = GetTextColorForHSB(TagModule.Color)
+    TagTitle.TextScaled = true
+    TagTitle.TextWrapped = true
+    TagTitle.ZIndex = 3
+
+    local TagFrame = Instance.new("Frame") -- Gunakan Frame dengan UICorner untuk Squircle
+    TagFrame.Name = "TagFrame"
+    TagFrame.BackgroundColor3 = TagModule.Color
+    TagFrame.Size = UDim2.new(0, 0, 0, TagModule.Height)
+    TagFrame.Position = UDim2.new(0, 60, 0.5, 0) -- Geser ke kanan seperti TextLabel
+    TagFrame.AnchorPoint = Vector2.new(0, 0.5)
+    TagFrame.Parent = Top
+    TagFrame.ZIndex = 2
+    TagFrame.ClipsDescendants = true
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 10) -- Rounded seperti Squircle
+    UICorner.Parent = TagFrame
+
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
+    UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
+    UIPadding.Parent = TagFrame
+
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+    UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    UIListLayout.Parent = TagFrame
+
+    TagTitle.Parent = TagFrame
+    TagModule.TagFrame = TagFrame
+
+    function TagModule:SetTitle(text)
+        TagModule.Title = text
+        TagTitle.Text = text
+    end
+
+    function TagModule:SetColor(color)
+        TagModule.Color = color
+        Services.Tween:Create(TagTitle, TweenInfo.new(0.06), {TextColor3 = GetTextColorForHSB(color)}):Play()
+        Services.Tween:Create(TagFrame, TweenInfo.new(0.06), {BackgroundColor3 = color}):Play()
+    end
+
+    Options.Tag = TagModule
+
 
     
     local mobile_button = Instance.new("TextButton")
@@ -545,147 +638,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         end
     end
 
-    
-     local InfoBase = Instance.new("Frame")
-    InfoBase.Name = "InfoBase"
-    InfoBase.Parent = Holder
-    InfoBase.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
-    InfoBase.BorderSizePixel = 1
-    InfoBase.BorderColor3 = Color3.fromRGB(50, 50, 80)
-    InfoBase.Position = UDim2.new(0, 10, 1, -60) -- Pojok kiri bawah
-    InfoBase.Size = UDim2.new(0, 200, 0, 50)
-    InfoBase.AnchorPoint = Vector2.new(0, 1)
-    InfoBase.ClipsDescendants = true
-    InfoBase.ZIndex = 2
-
-    local InfoBaseCorner = Instance.new("UICorner")
-    InfoBaseCorner.CornerRadius = UDim.new(0, 10)
-    InfoBaseCorner.Parent = InfoBase
-
-    local InfoBaseGradient = Instance.new("UIGradient")
-    InfoBaseGradient.Color = secondaryGradient
-    InfoBaseGradient.Rotation = 45
-    InfoBaseGradient.Parent = InfoBase
-
-    local InfoGlow = Instance.new("ImageLabel")
-    InfoGlow.Name = "InfoGlow"
-    InfoGlow.Parent = InfoBase
-    InfoGlow.BackgroundTransparency = 1
-    InfoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    InfoGlow.Size = UDim2.new(1, 10, 1, 10)
-    InfoGlow.Image = "rbxassetid://17290723539"
-    InfoGlow.ImageTransparency = 0.6
-    InfoGlow.ImageColor3 = Color3.fromRGB(100, 100, 150)
-    InfoGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-    InfoGlow.ZIndex = 1
-
-    local InfoInner = Instance.new("Frame")
-    InfoInner.Name = "InfoInner"
-    InfoInner.Parent = InfoBase
-    InfoInner.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-    InfoInner.BorderSizePixel = 0
-    InfoInner.Size = UDim2.new(1, -10, 1, -10)
-    InfoInner.Position = UDim2.new(0.5, 0, 0.5, 0)
-    InfoInner.AnchorPoint = Vector2.new(0.5, 0.5)
-    InfoInner.ClipsDescendants = true
-    InfoInner.ZIndex = 2
-
-    local InfoInnerCorner = Instance.new("UICorner")
-    InfoInnerCorner.CornerRadius = UDim.new(0, 8)
-    InfoInnerCorner.Parent = InfoInner
-
-    local InfoInnerGradient = Instance.new("UIGradient")
-    InfoInnerGradient.Color = primaryGradient
-    InfoInnerGradient.Rotation = 45
-    InfoInnerGradient.Parent = InfoInner
-
-    local UIPadding = Instance.new("UIPadding")
-    UIPadding.PaddingLeft = UDim.new(0, 6)
-    UIPadding.PaddingRight = UDim.new(0, 6)
-    UIPadding.PaddingTop = UDim.new(0, 6)
-    UIPadding.PaddingBottom = UDim.new(0, 6)
-    UIPadding.Parent = InfoInner
-
-    local Avatar = Instance.new("ImageLabel")
-    Avatar.Name = "Avatar"
-    Avatar.Parent = InfoInner
-    Avatar.BackgroundTransparency = 1
-    Avatar.Position = UDim2.new(0, 0, 0.5, 0)
-    Avatar.Size = UDim2.new(0, 36, 0, 36)
-    Avatar.AnchorPoint = Vector2.new(0, 0.5)
-    Avatar.ZIndex = 10
-    Avatar.Visible = true
-
-    -- Coba muat avatar dengan retry mechanism
-    local thumbType = Enum.ThumbnailType.AvatarThumbnail
-    local thumbSize = Enum.ThumbnailSize.Size150x150
-    local maxRetries = 3
-    local retryDelay = 1
-    local success, content = false, nil
-
-    if LocalPlayer then
-        for i = 1, maxRetries do
-            success, content = pcall(function()
-                return Players:GetUserThumbnailAsync(LocalPlayer.UserId, thumbType, thumbSize)
-            end)
-            if success then
-                Avatar.Image = content
-                print("Avatar loaded successfully for user", LocalPlayer.UserId, "on attempt", i)
-                break
-            else
-                warn("Attempt", i, "failed to load avatar for user", LocalPlayer.UserId, "- error:", content)
-                task.wait(retryDelay)
-            end
-        end
-        if not success then
-            Avatar.Image = "rbxassetid://0" -- Fallback ke placeholder default Roblox
-            warn("Failed to load avatar for user", LocalPlayer.UserId, "after", maxRetries, "attempts - using fallback image")
-        end
-    else
-        Avatar.Image = "rbxassetid://0"
-        warn("LocalPlayer not initialized, using fallback avatar image")
-    end
-
-    local AvatarCorner = Instance.new("UICorner")
-    AvatarCorner.CornerRadius = UDim.new(0, 8)
-    AvatarCorner.Parent = Avatar
-
-    local PlayerInfo = Instance.new("TextLabel")
-    PlayerInfo.Name = "PlayerInfo"
-    PlayerInfo.Parent = InfoInner
-    PlayerInfo.BackgroundTransparency = 1
-    PlayerInfo.Position = UDim2.new(0, 44, 0.5, 0)
-    PlayerInfo.Size = UDim2.new(0, 150, 0, 14)
-    PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
-    PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-    PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
-    PlayerInfo.TextSize = 12
-    PlayerInfo.TextScaled = true
-    PlayerInfo.TextWrapped = true
-    PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
-    PlayerInfo.Text = "Loading..."
-    PlayerInfo.ZIndex = 3
-
-    local function updatePlayerInfo()
-        if not LocalPlayer then
-            PlayerInfo.Text = "Loading..."
-            return
-        end
-        PlayerInfo.Text = LocalPlayer.Name or "Unknown"
-    end
-
-    
-    if LocalPlayer then
-        updatePlayerInfo()
-    end
-
-    
-    if LocalPlayer then
-        LocalPlayer.CharacterAdded:Connect(function(char)
-            updatePlayerInfo()
-        end)
-    end       
-
+      
 
 	--// Animate
 	local Close = function()
@@ -1302,25 +1255,23 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 		},
 	}
 
-	function Options:SetTheme(theme)
-    if Top and Top:FindFirstChild("TextLabel") then
-        Top.TextLabel.TextColor3 = theme.Title
-    end
-    if Holder and Holder:FindFirstChild("InfoBase") then
-        Holder.InfoBase.BackgroundColor3 = theme.Secondary
-        Holder.InfoBase.BorderColor3 = theme.Outline
-        Holder.InfoBase.InfoGlow.ImageColor3 = theme.Icon
-        Holder.InfoBase.InfoInner.BackgroundColor3 = theme.Primary
-        if Holder.InfoBase.InfoInner:FindFirstChild("PlayerInfo") then
-            Holder.InfoBase.InfoInner.PlayerInfo.TextColor3 = theme.Title
-        end
-    end
-    if Screen and Screen:FindFirstChild("Mobile") then
-        Screen.Mobile.BackgroundColor3 = theme.Secondary
-        Screen.Mobile.State.TextColor3 = theme.Title
-        Screen.Mobile.Icon.ImageColor3 = theme.Icon
-    end
-end
+	function Options:SetTheme(Info)
+		Theme = Info or Theme
+
+		Window.BackgroundColor3 = Theme.Primary
+		Holder.BackgroundColor3 = Theme.Secondary
+		Window.UIStroke.Color = Theme.Shadow
+
+		for Index, Descendant in next, Screen:GetDescendants() do
+			local Name, Class =  Themes.Names[Descendant.Name],  Themes.Classes[Descendant.ClassName]
+
+			if Name then
+				Name(Descendant);
+			elseif Class then
+				Class(Descendant);
+			end
+		end
+	end
 
 	--// Changing Settings
 
