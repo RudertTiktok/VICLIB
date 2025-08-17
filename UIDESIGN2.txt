@@ -1,33 +1,12 @@
 
 
 --// Connections
+local GetService = game.GetService
 local Connect = game.Loaded.Connect
 local Wait = game.Loaded.Wait
 local Clone = game.Clone 
 local Destroy = game.Destroy 
-local RobloxReplicatedStorage = cloneref(game:GetService('RobloxReplicatedStorage'))
-local RbxAnalyticsService = cloneref(game:GetService('RbxAnalyticsService'))
-local ReplicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
-local UserInputService = cloneref(game:GetService('UserInputService'))
-local NetworkClient = cloneref(game:GetService("NetworkClient"))
-local TweenService = cloneref(game:GetService('TweenService'))
-local VirtualUser = cloneref(game:GetService('VirtualUser'))
-local HttpService = cloneref(game:GetService('HttpService'))
-local RunService = cloneref(game:GetService('RunService'))
-local LogService = cloneref(game:GetService('LogService'))
-local Lighting = cloneref(game:GetService('Lighting'))
-local CoreGui = cloneref(game:GetService('CoreGui'))
-local Players = cloneref(game:GetService('Players'))
-local Debris = cloneref(game:GetService('Debris'))
-local Stats = cloneref(game:GetService('Stats'))
 
-local Player = nil
-
-while not Players.LocalPlayer do
-    task.wait()
-end
-Player = Players.LocalPlayer
-local Humanoid = nil
 
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -565,7 +544,8 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         end
     end
 
-    local InfoBase = Instance.new("Frame")
+    
+        local InfoBase = Instance.new("Frame")
     InfoBase.Name = "InfoBase"
     InfoBase.Parent = Holder
     InfoBase.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
@@ -575,6 +555,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     InfoBase.Size = UDim2.new(0, 200, 0, 50)
     InfoBase.AnchorPoint = Vector2.new(0, 0)
     InfoBase.ClipsDescendants = true
+    InfoBase.ZIndex = 2
 
     local InfoBaseCorner = Instance.new("UICorner")
     InfoBaseCorner.CornerRadius = UDim.new(0, 10)
@@ -587,7 +568,6 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     local InfoGlow = Instance.new("ImageLabel")
     InfoGlow.Name = "InfoGlow"
-    InfoBase.ZIndex = 2
     InfoGlow.Parent = InfoBase
     InfoGlow.BackgroundTransparency = 1
     InfoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -626,31 +606,31 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     UIPadding.Parent = InfoInner
 
     local Avatar = Instance.new("ImageLabel")
-Avatar.Name = "Avatar"
-Avatar.Parent = InfoInner
-Avatar.BackgroundTransparency = 1
-Avatar.Position = UDim2.new(0, 0, 0.5, 0)
-Avatar.Size = UDim2.new(0, 36, 0, 36)
-Avatar.AnchorPoint = Vector2.new(0, 0.5)
-Avatar.ZIndex = 10 -- Naikkan ZIndex untuk memastikan terlihat
-Avatar.Visible = true
-local thumbType = Enum.ThumbnailType.AvatarThumbnail
-local thumbSize = Enum.ThumbnailSize.Size150x150
-if Player then
-    local success, content = pcall(function()
-        return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
-    end)
-    if success then
-        Avatar.Image = content
-        print("Avatar loaded successfully for user", Player.UserId)
+    Avatar.Name = "Avatar"
+    Avatar.Parent = InfoInner
+    Avatar.BackgroundTransparency = 1
+    Avatar.Position = UDim2.new(0, 0, 0.5, 0)
+    Avatar.Size = UDim2.new(0, 36, 0, 36)
+    Avatar.AnchorPoint = Vector2.new(0, 0.5)
+    Avatar.ZIndex = 10
+    Avatar.Visible = true
+    local thumbType = Enum.ThumbnailType.AvatarThumbnail
+    local thumbSize = Enum.ThumbnailSize.Size150x150
+    if LocalPlayer then
+        local success, content = pcall(function()
+            return Players:GetUserThumbnailAsync(LocalPlayer.UserId, thumbType, thumbSize)
+        end)
+        if success then
+            Avatar.Image = content
+            print("Avatar loaded successfully for user", LocalPlayer.UserId)
+        else
+            Avatar.Image = "rbxassetid://503476800" -- Fallback ke ID valid
+            warn("Failed to load avatar for user", LocalPlayer.UserId or "nil", "- using fallback image")
+        end
     else
-        Avatar.Image = "rbxassetid://0"
-        warn("Failed to load avatar for user", Player.UserId or "nil", "- using fallback image")
+        Avatar.Image = "rbxassetid://503476800"
+        warn("LocalPlayer not initialized, using fallback avatar image")
     end
-else
-    Avatar.Image = "rbxassetid://0"
-    warn("Player not initialized, using fallback avatar image")
-end
 
     local AvatarCorner = Instance.new("UICorner")
     AvatarCorner.CornerRadius = UDim.new(0, 8)
@@ -673,16 +653,25 @@ end
     PlayerInfo.ZIndex = 3
 
     local function updatePlayerInfo()
-    if not Player then
-        PlayerInfo.Text = "Loading..."
-        return
+        if not LocalPlayer then
+            PlayerInfo.Text = "Loading..."
+            return
+        end
+        PlayerInfo.Text = LocalPlayer.Name or "Unknown"
     end
-    PlayerInfo.Text = Player.Name or "Unknown"
-end
+
     
-    if Player then
+    if LocalPlayer then
         updatePlayerInfo()
     end
+
+    
+    if LocalPlayer then
+        LocalPlayer.CharacterAdded:Connect(function(char)
+            updatePlayerInfo()
+        end)
+    end
+
 
 	--// Animate
 	local Close = function()
