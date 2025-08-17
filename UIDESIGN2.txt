@@ -465,9 +465,7 @@ local function Color3ToHSB(color)
 end
 
 local function GetPerceivedBrightness(color)
-    local r = color.R
-    local g = color.G
-    local b = color.B
+    local r, g, b = color.R, color.G, color.B
     return 0.299 * r + 0.587 * g + 0.114 * b
 end
 
@@ -480,17 +478,16 @@ local TagModule = {
     Title = getgenv().namehub or Settings.Title or "VicoX Hub",
     Color = Color3.fromRGB(255, 215, 0),
     TagFrame = nil,
-    Height = 26,
-    Padding = 8,
-    TextSize = 16,
+    Height = 22,
+    Padding = 6,
+    TextSize = 14,
 }
-
 
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height)
-TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
+TagFrame.Size = UDim2.new(0, 90, 0, TagModule.Height)
+TagFrame.Position = UDim2.new(0, 70, 0.5, 0)
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
@@ -499,7 +496,7 @@ TagFrame.Visible = true
 TagModule.TagFrame = TagFrame
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.CornerRadius = UDim.new(0, 6)
 UICorner.Parent = TagFrame
 
 local UIStroke = Instance.new("UIStroke")
@@ -518,11 +515,10 @@ UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 UIListLayout.Parent = TagFrame
 
--- TITLE
 local TagTitle = Instance.new("TextLabel")
 TagTitle.BackgroundTransparency = 1
-TagTitle.Size = UDim2.new(1, -16, 0, TagModule.Height)
-TagTitle.Position = UDim2.new(0, 8, 0, 0)
+TagTitle.Size = UDim2.new(1, -12, 0, TagModule.Height)
+TagTitle.Position = UDim2.new(0, 6, 0, 0)
 TagTitle.TextSize = TagModule.TextSize
 TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
 TagTitle.Text = TagModule.Title
@@ -540,7 +536,7 @@ TagShadow.Name = "TagShadow"
 TagShadow.Parent = Top
 TagShadow.BackgroundTransparency = 1
 TagShadow.Position = TagFrame.Position
-TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 20, 0, TagFrame.Size.Y.Offset + 20)
+TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 16, 0, TagFrame.Size.Y.Offset + 16)
 TagShadow.AnchorPoint = TagFrame.AnchorPoint
 TagShadow.Image = "rbxassetid://17183270335"
 TagShadow.ImageTransparency = 0.5
@@ -548,32 +544,36 @@ TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
 TagShadow.ZIndex = 0
 TagShadow.Visible = true
 
--- CAHAYA SHIMMER
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, TagModule.Color),
-    ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
-    ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
-    ColorSequenceKeypoint.new(1, TagModule.Color)
-})
-UIGradient.Transparency = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 0),
-    NumberSequenceKeypoint.new(0.45, 0.2),
-    NumberSequenceKeypoint.new(0.55, 0.2),
-    NumberSequenceKeypoint.new(1, 0)
-})
-UIGradient.Rotation = 30
-UIGradient.Parent = TagFrame
+local function makeGradient()
+    local grad = Instance.new("UIGradient")
+    grad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, TagModule.Color),
+        ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
+        ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
+        ColorSequenceKeypoint.new(1, TagModule.Color)
+    })
+    grad.Transparency = NumberSequence.new({
+        NumberSequenceKeypoint.new(0, 0),
+        NumberSequenceKeypoint.new(0.45, 0.2),
+        NumberSequenceKeypoint.new(0.55, 0.2),
+        NumberSequenceKeypoint.new(1, 0)
+    })
+    grad.Rotation = 30
+    grad.Parent = TagFrame
+    return grad
+end
 
+local Gradient1 = makeGradient()
+local Gradient2 = makeGradient()
 
 local RunService = game:GetService("RunService")
 RunService.RenderStepped:Connect(function()
     if TagFrame.Parent then
         local t = (tick() % 2) / 2
-        UIGradient.Offset = Vector2.new(t * 2 - 1, 0)
+        Gradient1.Offset = Vector2.new(t * 2 - 1, 0)
+        Gradient2.Offset = Vector2.new(((t + 0.5) % 1) * 2 - 1, 0)
     end
 end)
-
 
 function TagModule:SetTitle(text)
     TagModule.Title = text
@@ -584,12 +584,18 @@ function TagModule:SetColor(color)
     TagModule.Color = color
     Services.Tween:Create(TagFrame, TweenInfo.new(0.1), {BackgroundColor3 = color}):Play()
     Services.Tween:Create(TagTitle, TweenInfo.new(0.1), {TextColor3 = GetTextColorForHSB(color)}):Play()
-    UIGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, color),
-        ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
-        ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
-        ColorSequenceKeypoint.new(1, color)
-    })
+
+    local function updateGradient(grad)
+        grad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, color),
+            ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 255, 200)),
+            ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 255, 200)),
+            ColorSequenceKeypoint.new(1, color)
+        })
+    end
+
+    updateGradient(Gradient1)
+    updateGradient(Gradient2)
 end
 
 Options.Tag = TagModule
