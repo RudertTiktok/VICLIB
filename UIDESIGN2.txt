@@ -556,14 +556,25 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         TagTitle.TextColor3 = GetTextColorForHSB(animatedColor)
     end
 
-    local connection
-    connection = Services.RunService.RenderStepped:Connect(function()
-        if TagFrame.Parent then
-            updateHue()
-        else
-            connection:Disconnect()
-        end
-    end)
+    local RunService = Services.Run and Services.Run or game:GetService("RunService")
+    if not RunService then        
+        task.spawn(function()
+            while TagFrame.Parent do
+                updateHue()
+                task.wait(1/60)
+            end
+        end)
+    else    
+        local connection = RunService.RenderStepped:Connect(function()
+            if TagFrame.Parent then
+                updateHue()
+            else
+                connection:Disconnect()
+            end
+        end)
+        table.insert(self.connections, connection)
+    end
+
 
     function TagModule:SetTitle(text)
         TagModule.Title = text
