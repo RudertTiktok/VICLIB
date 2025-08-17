@@ -64,7 +64,7 @@ Let me know if you need further adjustments or a different format!
 
 ---
 
-How To Use VicLib?
+### How To Use VicLib?
 
 ```lua
 local gui = Library:new()
@@ -132,4 +132,4 @@ local keybind = mainTab:create_keybind({
     callback = function(key)
         print("Action key pressed: " .. key)
     end
-})```
+})
