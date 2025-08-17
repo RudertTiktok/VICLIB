@@ -67,7 +67,11 @@ Let me know if you need further adjustments or a different format!
 ### How To Use VicLib?
 
 ```lua
-local gui = Library:new()
+
+local VicLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RudertTiktok/VICLIB/refs/heads/main/UIDESIGN2.txt"))()
+
+local gui = VicLib:new()
+
 local mainTab = gui:create_tab("Main")
 local module = mainTab:create_module({ title = "Settings", section = "left" })
 local checkbox = mainTab:create_checkbox({
