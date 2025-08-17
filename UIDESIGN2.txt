@@ -30,6 +30,15 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
+local primaryGradient = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 80))
+})
+local secondaryGradient = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 40)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 60))
+})
+
 --// Important 
 local Setup = {
 	Keybind = Enum.KeyCode.LeftControl,
@@ -414,14 +423,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 	local Maximized = false;
 	local BlurEnabled = false
 
-    local primaryGradient = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 50)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 80))
-})
-local secondaryGradient = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 40)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 60))
-})
+    
 
 	for Index, Example in next, Window:GetDescendants() do
 		if Example.Name:find("Example") and not Examples[Example.Name] then
@@ -629,83 +631,93 @@ local secondaryGradient = ColorSequence.new({
     UIPadding.Parent = InfoInner
 
     local Avatar = Instance.new("ImageLabel")
-    Avatar.Name = "Avatar"
-    Avatar.Parent = InfoInner
-    Avatar.BackgroundTransparency = 1
-    Avatar.Position = UDim2.new(0, 0, 0.5, 0)
-    Avatar.Size = UDim2.new(0, 36, 0, 36)
-    Avatar.AnchorPoint = Vector2.new(0, 0.5)
-    local thumbType = Enum.ThumbnailType.AvatarThumbnail
-    local thumbSize = Enum.ThumbnailSize.Size150x150
-    local success, content = pcall(function()
-        return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
-    end)
-    if success then
-        Avatar.Image = content
+Avatar.Name = "Avatar"
+Avatar.Parent = InfoInner
+Avatar.BackgroundTransparency = 1
+Avatar.Position = UDim2.new(0, 0, 0.5, 0)
+Avatar.Size = UDim2.new(0, 36, 0, 36)
+Avatar.AnchorPoint = Vector2.new(0, 0.5)
+local thumbType = Enum.ThumbnailType.AvatarThumbnail
+local thumbSize = Enum.ThumbnailSize.Size150x150
+local success, content = pcall(function()
+    return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
+end)
+if success then
+    Avatar.Image = content
+else
+    Avatar.Image = "rbxassetid://17290697757"
+end
+
+local AvatarCorner = Instance.new("UICorner")
+AvatarCorner.CornerRadius = UDim.new(0, 8)
+AvatarCorner.Parent = Avatar
+
+local HeartIcon = Instance.new("ImageLabel")
+HeartIcon.Name = "HeartIcon"
+HeartIcon.Parent = InfoInner
+HeartIcon.BackgroundTransparency = 1
+HeartIcon.Position = UDim2.new(0, 40, 0.5, 0)
+HeartIcon.Size = UDim2.new(0, 14, 0, 14)
+HeartIcon.AnchorPoint = Vector2.new(0, 0.5)
+HeartIcon.Image = "rbxassetid://10653372143"
+HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
+HeartIcon.ImageTransparency = 0.3
+
+local PlayerInfo = Instance.new("TextLabel")
+PlayerInfo.Name = "PlayerInfo"
+PlayerInfo.Parent = InfoInner
+PlayerInfo.BackgroundTransparency = 1
+PlayerInfo.Position = UDim2.new(0, 60, 0.5, 0)
+PlayerInfo.Size = UDim2.new(0, 120, 0, 14)
+PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
+PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
+PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
+PlayerInfo.TextSize = 12
+PlayerInfo.TextScaled = true
+PlayerInfo.TextWrapped = true
+PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
+PlayerInfo.Text = "Loading..."
+
+local function updatePlayerInfo()
+    if not Player.Character or not Humanoid or not Humanoid.Parent or Humanoid.Health == nil then
+        PlayerInfo.Text = "Loading..."
+        PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
+        HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
+        return
+    end
+    local health = math.floor(Humanoid.Health)
+    PlayerInfo.Text = string.format("%s | %d", Player.Name, health)
+    local healthPercentage = health / Humanoid.MaxHealth
+    if healthPercentage > 0.6 then
+        PlayerInfo.TextColor3 = Color3.fromRGB(100, 255, 100)
+        HeartIcon.ImageColor3 = Color3.fromRGB(100, 255, 100)
+    elseif healthPercentage > 0.2 then
+        PlayerInfo.TextColor3 = Color3.fromRGB(255, 255, 100)
+        HeartIcon.ImageColor3 = Color3.fromRGB(255, 255, 100)
     else
-        Avatar.Image = "rbxassetid://17290697757"
+        PlayerInfo.TextColor3 = Color3.fromRGB(255, 100, 100)
+        HeartIcon.ImageColor3 = Color3.fromRGB(255, 100, 100)
     end
+end
 
-    local AvatarCorner = Instance.new("UICorner")
-    AvatarCorner.CornerRadius = UDim.new(0, 8)
-    AvatarCorner.Parent = Avatar
 
-    local HeartIcon = Instance.new("ImageLabel")
-    HeartIcon.Name = "HeartIcon"
-    HeartIcon.Parent = InfoInner
-    HeartIcon.BackgroundTransparency = 1
-    HeartIcon.Position = UDim2.new(0, 40, 0.5, 0)
-    HeartIcon.Size = UDim2.new(0, 14, 0, 14)
-    HeartIcon.AnchorPoint = Vector2.new(0, 0.5)
-    HeartIcon.Image = "rbxassetid://10653372143"
-    HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
-    HeartIcon.ImageTransparency = 0.3
-
-    local PlayerInfo = Instance.new("TextLabel")
-    PlayerInfo.Name = "PlayerInfo"
-    PlayerInfo.Parent = InfoInner
-    PlayerInfo.BackgroundTransparency = 1
-    PlayerInfo.Position = UDim2.new(0, 60, 0.5, 0)
-    PlayerInfo.Size = UDim2.new(0, 120, 0, 14)
-    PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
-    PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
-    PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
-    PlayerInfo.TextSize = 12
-    PlayerInfo.TextScaled = true
-    PlayerInfo.TextWrapped = true
-    PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
-    PlayerInfo.Text = "Loading..."
-
-    local function updatePlayerInfo()
-        if not Humanoid or not Humanoid.Parent then
-            PlayerInfo.Text = "Loading..."
-            PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
-            HeartIcon.ImageColor3 = Color3.fromRGB(100, 100, 150)
-            return
-        end
-        local health = math.floor(Humanoid.Health)
-        PlayerInfo.Text = string.format("%s | %d", Player.Name, health)
-        local healthPercentage = health / Humanoid.MaxHealth
-        if healthPercentage > 0.6 then
-            PlayerInfo.TextColor3 = Color3.fromRGB(100, 255, 100)
-            HeartIcon.ImageColor3 = Color3.fromRGB(100, 255, 100)
-        elseif healthPercentage > 0.2 then
-            PlayerInfo.TextColor3 = Color3.fromRGB(255, 255, 100)
-            HeartIcon.ImageColor3 = Color3.fromRGB(255, 255, 100)
-        else
-            PlayerInfo.TextColor3 = Color3.fromRGB(255, 100, 100)
-            HeartIcon.ImageColor3 = Color3.fromRGB(255, 100, 100)
-        end
-    end
-
-    if Player.Character then
-        Humanoid = Player.Character:WaitForChild("Humanoid")
+if Player.Character then
+    Humanoid = Player.Character:WaitForChild("Humanoid", 5) -- Tunggu hingga 5 detik
+    if Humanoid then
         updatePlayerInfo()
     end
+end
 
-    
-    Humanoid.HealthChanged:Connect(updatePlayerInfo)
-    updatePlayerInfo()
+
+Player.CharacterAdded:Connect(function(char)
+    Humanoid = char:WaitForChild("Humanoid", 5) -- Tunggu hingga 5 detik
+    if Humanoid then
+        updatePlayerInfo()
+        Humanoid.HealthChanged:Connect(updatePlayerInfo)
+    end
+end)
+   
+    Humanoid.HealthChanged:Connect(updatePlayerInfo)    
 
 
 	--// Animate
