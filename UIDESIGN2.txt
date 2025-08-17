@@ -477,40 +477,41 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     -- Buat Tag
     local TagModule = {
-        Title = getgenv().namehub or Settings.Title or "VicoX",
-        Color = Color3.fromRGB(255, 215, 0),
+        Title = getgenv().namehub or Settings.Title or "VicoX Hub",
+        Color = Color3.fromRGB(255, 215, 0), -- Warna emas
         TagFrame = nil,
         Height = 26,
-        Padding = 8, 
-        TextSize = 14, 
+        Padding = 8,
+        TextSize = 14,
     }
 
     local TagTitle = Instance.new("TextLabel")
     TagTitle.BackgroundTransparency = 1
-    TagTitle.Size = UDim2.new(0, 80, 0, TagModule.Height) -- Ukuran lebih kecil
+    TagTitle.Size = UDim2.new(1, -16, 0, TagModule.Height) -- Lebar relatif untuk menyesuaikan TagFrame
+    TagTitle.Position = UDim2.new(0, 8, 0, 0) -- Sesuaikan dengan padding
     TagTitle.TextSize = TagModule.TextSize
     TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
     TagTitle.Text = TagModule.Title
-    TagTitle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Hitam untuk kontras dengan emas
-    TagTitle.TextScaled = false -- Nonaktifkan TextScaled
+    TagTitle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Hitam untuk kontras
+    TagTitle.TextScaled = false
     TagTitle.TextWrapped = true
-    TagTitle.TextTruncate = Enum.TextTruncate.AtEnd -- Potong teks jika terlalu panjang
+    TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
     TagTitle.ZIndex = 3
     TagTitle.Visible = true
 
     local TagFrame = Instance.new("Frame")
     TagFrame.Name = "TagFrame"
     TagFrame.BackgroundColor3 = TagModule.Color
-    TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height) -- Ukuran lebih kecil
+    TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height)
     TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
     TagFrame.AnchorPoint = Vector2.new(0, 0.5)
     TagFrame.Parent = Top
     TagFrame.ZIndex = 2
-    TagFrame.ClipsDescendants = true -- Potong teks yang meluber
+    TagFrame.ClipsDescendants = false -- Nonaktifkan untuk debug teks
     TagFrame.Visible = true
 
     local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 8) -- Sudut lebih kecil
+    UICorner.CornerRadius = UDim.new(0, 8)
     UICorner.Parent = TagFrame
 
     local UIStroke = Instance.new("UIStroke")
@@ -518,6 +519,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     UIStroke.Color = Color3.fromRGB(50, 50, 50)
     UIStroke.Transparency = 0.2
     UIStroke.Parent = TagFrame
+    UIStroke.ZIndex = 2
 
     local TagShadow = Instance.new("ImageLabel")
     TagShadow.Name = "TagShadow"
@@ -529,7 +531,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     TagShadow.ImageTransparency = 0.4
     TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     TagShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    TagShadow.ZIndex = 0 -- Di belakang TagFrame
+    TagShadow.ZIndex = 0 -- Pastikan di belakang
     TagShadow.Visible = true
 
     local UIPadding = Instance.new("UIPadding")
@@ -542,18 +544,18 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
     UIListLayout.Parent = TagFrame
 
-    
+    -- Efek Cahaya Bergerak
     local UIGradient = Instance.new("UIGradient")
     UIGradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 100)), -- Cahaya terang
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 235, 80)), -- Sorotan lebih lembut
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 215, 0))
     })
     UIGradient.Offset = Vector2.new(0, 0)
     UIGradient.Rotation = 0
     UIGradient.Parent = TagFrame
 
-    
+    -- Animasi Cahaya
     local RunService = Services.Run and Services.Run or game:GetService("RunService")
     if not RunService then
         warn("Debug: RunService not available, using task.spawn for light animation")
@@ -563,8 +565,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
                 task.wait(1/60)
             end
         end)
-    else
-        print("Debug: RunService available:", RunService)
+    else        
         local connection = RunService.RenderStepped:Connect(function()
             if TagFrame.Parent then
                 UIGradient.Offset = Vector2.new((tick() % 2) - 1, 0)
@@ -580,7 +581,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     function TagModule:SetTitle(text)
         TagModule.Title = text
-        TagTitle.Text = text        
+        TagTitle.Text = text       
     end
 
     function TagModule:SetColor(color)
@@ -589,9 +590,9 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         Services.Tween:Create(TagTitle, TweenInfo.new(0.06), {TextColor3 = GetTextColorForHSB(color)}):Play()
         UIGradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, color),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 100)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 235, 80)),
             ColorSequenceKeypoint.new(1, color)
-        })        
+        })
     end
 
     Options.Tag = TagModule
