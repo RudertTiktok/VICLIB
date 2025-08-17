@@ -6,8 +6,22 @@ local Connect = game.Loaded.Connect
 local Wait = game.Loaded.Wait
 local Clone = game.Clone 
 local Destroy = game.Destroy 
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
+local RobloxReplicatedStorage = cloneref(game:GetService('RobloxReplicatedStorage'))
+local RbxAnalyticsService = cloneref(game:GetService('RbxAnalyticsService'))
+local ReplicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
+local UserInputService = cloneref(game:GetService('UserInputService'))
+local NetworkClient = cloneref(game:GetService("NetworkClient"))
+local TweenService = cloneref(game:GetService('TweenService'))
+local VirtualUser = cloneref(game:GetService('VirtualUser'))
+local HttpService = cloneref(game:GetService('HttpService'))
+local RunService = cloneref(game:GetService('RunService'))
+local LogService = cloneref(game:GetService('LogService'))
+local Lighting = cloneref(game:GetService('Lighting'))
+local CoreGui = cloneref(game:GetService('CoreGui'))
+local Players = cloneref(game:GetService('Players'))
+local Debris = cloneref(game:GetService('Debris'))
+local Stats = cloneref(game:GetService('Stats'))
+
 local Player = Players.LocalPlayer
 local Humanoid = Player.Character and Player.Character:WaitForChild("Humanoid")
 
