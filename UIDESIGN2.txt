@@ -1,7 +1,6 @@
 
 
 --// Connections
-local GetService = game.GetService
 local Connect = game.Loaded.Connect
 local Wait = game.Loaded.Wait
 local Clone = game.Clone 
@@ -22,7 +21,12 @@ local Players = cloneref(game:GetService('Players'))
 local Debris = cloneref(game:GetService('Debris'))
 local Stats = cloneref(game:GetService('Stats'))
 
-local Player = Players.LocalPlayer
+local Player = nil
+
+while not Players.LocalPlayer do
+    task.wait()
+end
+Player = Players.LocalPlayer
 local Humanoid = nil
 
 if not game:IsLoaded() then
@@ -622,16 +626,17 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     UIPadding.Parent = InfoInner
 
     local Avatar = Instance.new("ImageLabel")
-    Avatar.Name = "Avatar"
-    Avatar.Parent = InfoInner
-    Avatar.BackgroundTransparency = 1
-    Avatar.Position = UDim2.new(0, 0, 0.5, 0)
-    Avatar.Size = UDim2.new(0, 36, 0, 36)
-    Avatar.AnchorPoint = Vector2.new(0, 0.5)
-    Avatar.ZIndex = 3
-    Avatar.Visible = true
-    local thumbType = Enum.ThumbnailType.AvatarThumbnail
-    local thumbSize = Enum.ThumbnailSize.Size150x150
+Avatar.Name = "Avatar"
+Avatar.Parent = InfoInner
+Avatar.BackgroundTransparency = 1
+Avatar.Position = UDim2.new(0, 0, 0.5, 0)
+Avatar.Size = UDim2.new(0, 36, 0, 36)
+Avatar.AnchorPoint = Vector2.new(0, 0.5)
+Avatar.ZIndex = 10 -- Naikkan ZIndex untuk memastikan terlihat
+Avatar.Visible = true
+local thumbType = Enum.ThumbnailType.AvatarThumbnail
+local thumbSize = Enum.ThumbnailSize.Size150x150
+if Player then
     local success, content = pcall(function()
         return Players:GetUserThumbnailAsync(Player.UserId, thumbType, thumbSize)
     end)
@@ -639,9 +644,13 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         Avatar.Image = content
         print("Avatar loaded successfully for user", Player.UserId)
     else
-        Avatar.Image = "rbxassetid://17290697757"
-        warn("Failed to load avatar for user", Player.UserId, "- using fallback image")
+        Avatar.Image = "rbxassetid://0"
+        warn("Failed to load avatar for user", Player.UserId or "nil", "- using fallback image")
     end
+else
+    Avatar.Image = "rbxassetid://0"
+    warn("Player not initialized, using fallback avatar image")
+end
 
     local AvatarCorner = Instance.new("UICorner")
     AvatarCorner.CornerRadius = UDim.new(0, 8)
@@ -651,8 +660,8 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     PlayerInfo.Name = "PlayerInfo"
     PlayerInfo.Parent = InfoInner
     PlayerInfo.BackgroundTransparency = 1
-    PlayerInfo.Position = UDim2.new(0, 44, 0.5, 0) -- Disesuaikan karena HeartIcon dihapus
-    PlayerInfo.Size = UDim2.new(0, 150, 0, 14) -- Diperlebar untuk nama panjang
+    PlayerInfo.Position = UDim2.new(0, 44, 0.5, 0)
+    PlayerInfo.Size = UDim2.new(0, 150, 0, 14)
     PlayerInfo.AnchorPoint = Vector2.new(0, 0.5)
     PlayerInfo.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
     PlayerInfo.TextColor3 = Color3.fromRGB(200, 200, 255)
@@ -664,15 +673,16 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     PlayerInfo.ZIndex = 3
 
     local function updatePlayerInfo()
-        if not Player then
-            PlayerInfo.Text = "Loading..."
-            return
-        end
-        PlayerInfo.Text = Player.Name
+    if not Player then
+        PlayerInfo.Text = "Loading..."
+        return
     end
-
+    PlayerInfo.Text = Player.Name or "Unknown"
+end
     
-    updatePlayerInfo()
+    if Player then
+        updatePlayerInfo()
+    end
 
 	--// Animate
 	local Close = function()
