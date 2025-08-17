@@ -689,10 +689,7 @@ local secondaryGradient = ColorSequence.new({
         updatePlayerInfo()
     end
 
-    Player.CharacterAdded:Connect(function(char)
-        Humanoid = char:WaitForChild("Humanoid")
-        updatePlayerInfo()
-    end)
+    
     Humanoid.HealthChanged:Connect(updatePlayerInfo)
     updatePlayerInfo()
 
