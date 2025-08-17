@@ -12,9 +12,8 @@ local Player = Players.LocalPlayer
 local Humanoid = Player.Character and Player.Character:WaitForChild("Humanoid")
 
 
-if (not game:IsLoaded()) then
-	local Loaded = game.Loaded
-	Loaded.Wait(Loaded);
+if not game:IsLoaded() then
+    game.Loaded:Wait()
 end
 
 --// Important 
@@ -683,6 +682,11 @@ local secondaryGradient = ColorSequence.new({
             PlayerInfo.TextColor3 = Color3.fromRGB(255, 100, 100)
             HeartIcon.ImageColor3 = Color3.fromRGB(255, 100, 100)
         end
+    end
+
+    if Player.Character then
+        Humanoid = Player.Character:WaitForChild("Humanoid")
+        updatePlayerInfo()
     end
 
     Player.CharacterAdded:Connect(function(char)
