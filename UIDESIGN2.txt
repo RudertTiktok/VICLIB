@@ -480,10 +480,10 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         end
     end
 
-    
+    -- Buat Tag
     local TagModule = {
-        Title = getgenv().namehub or "VicoX",
-        Color = Color3.fromRGB(200, 200, 255),
+        Title = getgenv().namehub or Settings.Title or "VicoX",
+        Color = Theme.Title or Color3.fromRGB(200, 200, 255),
         TagFrame = nil,
         Height = 26,
         Padding = 10,
@@ -500,19 +500,21 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     TagTitle.TextScaled = true
     TagTitle.TextWrapped = true
     TagTitle.ZIndex = 3
+    TagTitle.Visible = true
 
-    local TagFrame = Instance.new("Frame") -- Gunakan Frame dengan UICorner untuk Squircle
+    local TagFrame = Instance.new("Frame")
     TagFrame.Name = "TagFrame"
     TagFrame.BackgroundColor3 = TagModule.Color
-    TagFrame.Size = UDim2.new(0, 0, 0, TagModule.Height)
-    TagFrame.Position = UDim2.new(0, 60, 0.5, 0) -- Geser ke kanan seperti TextLabel
+    TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height) -- Ukuran awal untuk memastikan terlihat
+    TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
     TagFrame.AnchorPoint = Vector2.new(0, 0.5)
     TagFrame.Parent = Top
     TagFrame.ZIndex = 2
-    TagFrame.ClipsDescendants = true
+    TagFrame.ClipsDescendants = false -- Nonaktifkan untuk debugging
+    TagFrame.Visible = true
 
     local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 10) -- Rounded seperti Squircle
+    UICorner.CornerRadius = UDim.new(0, 10)
     UICorner.Parent = TagFrame
 
     local UIPadding = Instance.new("UIPadding")
@@ -530,17 +532,18 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 
     function TagModule:SetTitle(text)
         TagModule.Title = text
-        TagTitle.Text = text
+        TagTitle.Text = text        
     end
 
     function TagModule:SetColor(color)
         TagModule.Color = color
         Services.Tween:Create(TagTitle, TweenInfo.new(0.06), {TextColor3 = GetTextColorForHSB(color)}):Play()
-        Services.Tween:Create(TagFrame, TweenInfo.new(0.06), {BackgroundColor3 = color}):Play()
+        Services.Tween:Create(TagFrame, TweenInfo.new(0.06), {BackgroundColor3 = color}):Play()        
     end
 
     Options.Tag = TagModule
 
+    
 
     
     local mobile_button = Instance.new("TextButton")
