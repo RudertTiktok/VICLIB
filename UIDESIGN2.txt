@@ -433,7 +433,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     
 
     
-    local function Color3ToHSB(color)
+     local function Color3ToHSB(color)
         local r, g, b = color.R, color.G, color.B
         local max = math.max(r, g, b)
         local min = math.min(r, g, b)
@@ -471,28 +471,24 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     end
 
     local function GetTextColorForHSB(color)
-        local hsb = Color3ToHSB(color)
-        local h, s, b = hsb.h, hsb.s, hsb.b
-        if GetPerceivedBrightness(color) > 0.5 then
-            return Color3.fromHSV(h / 360, 0, 0.05)
-        else
-            return Color3.fromHSV(h / 360, 0, 0.98)
-        end
+        local brightness = GetPerceivedBrightness(color)
+        
+        return brightness > 0.5 and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
     end
 
     -- Buat Tag
     local TagModule = {
         Title = getgenv().namehub or Settings.Title or "VicoX",
-        Color = Theme.Title or Color3.fromRGB(200, 200, 255),
+        Color = Color3.fromRGB(255, 215, 0), -- Warna emas
         TagFrame = nil,
         Height = 26,
         Padding = 10,
-        TextSize = 14,
+        TextSize = 16, 
     }
 
     local TagTitle = Instance.new("TextLabel")
     TagTitle.BackgroundTransparency = 1
-    TagTitle.Size = UDim2.new(0, 0, 0, 0) -- AutomaticSize ditangani UIListLayout
+    TagTitle.Size = UDim2.new(0, 100, 0, TagModule.Height) -- Ukuran minimum
     TagTitle.TextSize = TagModule.TextSize
     TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
     TagTitle.Text = TagModule.Title
@@ -505,17 +501,35 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     local TagFrame = Instance.new("Frame")
     TagFrame.Name = "TagFrame"
     TagFrame.BackgroundColor3 = TagModule.Color
-    TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height) -- Ukuran awal untuk memastikan terlihat
+    TagFrame.Size = UDim2.new(0, 120, 0, TagModule.Height)
     TagFrame.Position = UDim2.new(0, 60, 0.5, 0)
     TagFrame.AnchorPoint = Vector2.new(0, 0.5)
     TagFrame.Parent = Top
     TagFrame.ZIndex = 2
-    TagFrame.ClipsDescendants = false -- Nonaktifkan untuk debugging
+    TagFrame.ClipsDescendants = false
     TagFrame.Visible = true
 
     local UICorner = Instance.new("UICorner")
     UICorner.CornerRadius = UDim.new(0, 10)
     UICorner.Parent = TagFrame
+
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Thickness = 1
+    UIStroke.Color = Color3.fromRGB(50, 50, 50)
+    UIStroke.Transparency = 0.2
+    UIStroke.Parent = TagFrame
+
+    local TagShadow = Instance.new("ImageLabel")
+    TagShadow.Name = "TagShadow"
+    TagShadow.Parent = TagFrame
+    TagShadow.BackgroundTransparency = 1
+    TagShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    TagShadow.Size = UDim2.new(1, 20, 1, 20)
+    TagShadow.Image = "rbxassetid://17183270335"
+    TagShadow.ImageTransparency = 0.4
+    TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    TagShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+    TagShadow.ZIndex = 1
 
     local UIPadding = Instance.new("UIPadding")
     UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
@@ -530,9 +544,29 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
     TagTitle.Parent = TagFrame
     TagModule.TagFrame = TagFrame
 
+    
+    local hue = 0
+    local function updateHue()
+        hue = (hue + 0.005) % 5 
+        local baseColor = Color3.fromRGB(255, 215, 0) -- Emas sebagai dasar
+        local hsb = Color3ToHSB(baseColor)
+        local animatedColor = Color3.fromHSV(hue, hsb.s * 0.7, hsb.b * 0.9) -- Jaga estetika emas
+        TagFrame.BackgroundColor3 = animatedColor
+        TagTitle.TextColor3 = GetTextColorForHSB(animatedColor)
+    end
+
+    local connection
+    connection = Services.RunService.RenderStepped:Connect(function()
+        if TagFrame.Parent then
+            updateHue()
+        else
+            connection:Disconnect()
+        end
+    end)
+
     function TagModule:SetTitle(text)
         TagModule.Title = text
-        TagTitle.Text = text        
+        TagTitle.Text = text       
     end
 
     function TagModule:SetColor(color)
@@ -541,7 +575,7 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
         Services.Tween:Create(TagFrame, TweenInfo.new(0.06), {BackgroundColor3 = color}):Play()        
     end
 
-    Options.Tag = TagModule
+    Options.Tag = TagModule   
 
     
 
