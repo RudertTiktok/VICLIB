@@ -63,6 +63,7 @@ local Services = {
 	Tween = GetService(game, "TweenService");
 	Run = GetService(game, "RunService");
 	Input = GetService(game, "UserInputService");
+    RunService = GetService(game, "RunService");
 }
 
 local Player = {
