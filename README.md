@@ -53,7 +53,6 @@ notif:changeColor(Color3.fromRGB(200, 200, 200), Color3.fromRGB(100, 100, 100), 
 notif:deleteTimeout(2) -- Closes after 2 seconds
 -- notif:delete() -- Closes immediately
 ```
-```
 
 ### Notes
 - **Concise Focus**: Only includes installation and usage (creating/modifying notifications), omitting troubleshooting, features, or other details as requested.
