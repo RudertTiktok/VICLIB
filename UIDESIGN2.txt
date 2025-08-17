@@ -7,7 +7,9 @@ local Wait = game.Loaded.Wait
 local Clone = game.Clone 
 local Destroy = game.Destroy 
 local HttpService = game:GetService("HttpService")
-
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Humanoid = Player.Character and Player.Character:WaitForChild("Humanoid")
 
 
 if (not game:IsLoaded()) then
