@@ -301,24 +301,28 @@ function Animations:Component(Component: any, Custom: boolean)
 end
 
 function Library:visible(window)
-    if not window then
-        warn("Error: No window provided to Library:visible")
+    if not window or not window.Parent then
+        warn("Error: Invalid window or window.Parent in Library:visible")
         return
     end
     local stateLabel = window.Parent:FindFirstChild("Mobile") and window.Parent.Mobile:FindFirstChild("State")
     if not stateLabel then
         warn("Error: Mobile button or State label not found")
-        return
+        
     end
 
     if window.Visible then
         Animations:Close(window)
         window.Visible = false
-        stateLabel.Text = "Open"
+        if stateLabel then
+            stateLabel.Text = "Open"
+        end
     else
         Animations:Open(window, Setup.Transparency)
         window.Visible = true
-        stateLabel.Text = "Close"
+        if stateLabel then
+            stateLabel.Text = "Close"
+        end
     end
 end
 
@@ -394,6 +398,15 @@ function Library:CreateWindow(Settings: { Title: string, Size: UDim2, Transparen
 	local Opened = true;
 	local Maximized = false;
 	local BlurEnabled = false
+
+    local primaryGradient = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 80))
+})
+local secondaryGradient = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 40)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 60))
+})
 
 	for Index, Example in next, Window:GetDescendants() do
 		if Example.Name:find("Example") and not Examples[Example.Name] then
