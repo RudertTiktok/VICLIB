@@ -483,12 +483,12 @@ local TagModule = {
     TextSize = 14,
 }
 
--- FRAME UTAMA
+-- FRAME UTAMA (lebih pendek, geser ke kiri)
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 120, 0, TagModule.Height)
-TagFrame.Position = UDim2.new(0, 100, 0.5, 0) -- geser kanan
+TagFrame.Size = UDim2.new(0, 90, 0, TagModule.Height) -- dibuat lebih pendek
+TagFrame.Position = UDim2.new(0, 40, 0.5, 0) -- geser kiri
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
@@ -511,32 +511,32 @@ TagTitle.TextWrapped = true
 TagTitle.ZIndex = 3
 TagTitle.Parent = TagFrame
 
--- SHADOW
+-- SHADOW di belakang
 local TagShadow = Instance.new("ImageLabel")
 TagShadow.Name = "TagShadow"
 TagShadow.Parent = Top
 TagShadow.BackgroundTransparency = 1
 TagShadow.Position = TagFrame.Position
-TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 20, 0, TagFrame.Size.Y.Offset + 20)
+TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 16, 0, TagFrame.Size.Y.Offset + 16)
 TagShadow.AnchorPoint = TagFrame.AnchorPoint
 TagShadow.Image = "rbxassetid://17183270335"
 TagShadow.ImageTransparency = 0.5
 TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
 TagShadow.ZIndex = 0
 
--- SEGITIGA UJUNG TAG
+-- SEGITIGA KIRI (potongan tag)
 local TagTriangle = Instance.new("ImageLabel")
 TagTriangle.Name = "TagTriangle"
 TagTriangle.Parent = TagFrame
 TagTriangle.BackgroundTransparency = 1
-TagTriangle.Size = UDim2.new(0, 16, 1, 0)
-TagTriangle.Position = UDim2.new(1, -8, 0, 0)
+TagTriangle.Size = UDim2.new(0, 14, 1, 0)
+TagTriangle.Position = UDim2.new(0, -10, 0, 0) -- keluar sedikit di kiri
 TagTriangle.ZIndex = 1
 TagTriangle.Image = "rbxassetid://60310910040" -- segitiga
 TagTriangle.ImageColor3 = TagModule.Color
-TagTriangle.Rotation = 90
+TagTriangle.Rotation = 270 -- biar segitiga nunjuk ke kiri
 
--- LUBANG KECIL DI SEGITIGA
+-- LUBANG KECIL di segitiga
 local Hole = Instance.new("Frame")
 Hole.Name = "TagHole"
 Hole.Size = UDim2.new(0, 6, 0, 6)
@@ -555,6 +555,7 @@ HoleStroke.Color = Color3.fromRGB(0,0,0)
 HoleStroke.Thickness = 1
 HoleStroke.Parent = Hole
 
+-- SHIMMER EFFECT
 local function makeGradient()
     local grad = Instance.new("UIGradient")
     grad.Color = ColorSequence.new({
