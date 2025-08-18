@@ -1139,13 +1139,12 @@ Options.Tag = TagModule
 function Options:AddSlider(Settings: { Title: string, Description: string, MaxValue: number, AllowDecimals: boolean, DecimalAmount: number, Tab: Instance, Callback: any }) 
     local Slider = Clone(Components["Slider"])
     local Title, Description = Options:GetLabels(Slider)
-    local Main = Slider["Slider"]
-    local Amount = Main["Main"].Input
-    local Slide = Main["Slide"]
-    local Fire = Slide["Fire"]
-    local Fill = Slide["Highlight"]
-    local Circle = Fill["Circle"]
-
+    local Main = Slider["Slider"];
+		local Amount = Main["Main"].Input;
+		local Slide = Main["Slide"];
+		local Fire = Slide["Fire"];
+		local Fill = Slide["Highlight"];
+		local Circle = Fill["Circle"];
     
     Slide.ClipsDescendants = true
 
@@ -1202,14 +1201,12 @@ function Options:AddSlider(Settings: { Title: string, Description: string, MaxVa
         end
     end)
 
-    Connect(Fire.MouseButton1Down, function()
-        local Active = Activate()
-        Connect(Services.Input.InputEnded, function(Input) 
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                Active = false
-            end
-        end)
-    end)
+    Connect(Fire.MouseButton1Down, Activate)
+		Connect(Services.Input.InputEnded, function(Input) 
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+				Active = false
+			end
+		end)
 
 
     local initialScale = math.clamp(Value / Settings.MaxValue, 0, 1)
