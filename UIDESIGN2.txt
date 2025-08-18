@@ -359,21 +359,47 @@ function Library:exist()
 end
 
 function Library:save_flags()
-    if not self:exist() then return end
-    local flags = HttpService:JSONEncode(self.flags)
-    writefile(string.format("VicoX hub/%s.lua", game.GameId), flags)
+    if not self:exist() then 
+        warn("Cannot save flags: UI does not exist")
+        return 
+    end
+    if not isfolder("VicoX hub") then
+        makefolder("VicoX hub")
+    end
+    local success, encoded = pcall(HttpService.JSONEncode, HttpService, self.flags)
+    if not success then
+        warn("Failed to encode flags:", encoded)
+        return
+    end
+    local path = string.format("VicoX hub/%s.lua", game.GameId)
+    local success, err = pcall(writefile, path, encoded)
+    if not success then
+        warn("Failed to write flags to file:", err)
+    else
+        print("Flags saved to", path, ":", encoded)
+    end
 end
 
 function Library:load_flags()
     local path = string.format("VicoX hub/%s.lua", game.GameId)
     if not isfile(path) then
+        print("No flag file found at", path, ", creating new one")
         self:save_flags()
         return
     end
-    local flags = readfile(path)
-    if flags then
-        self.flags = HttpService:JSONDecode(flags) or {}
+    local success, content = pcall(readfile, path)
+    if not success then
+        warn("Failed to read flag file:", content)
+        self:save_flags()
+        return
+    end    
+    local success, decoded = pcall(HttpService.JSONDecode, HttpService, content)
+    if success and decoded then
+        self.flags = decoded
+        print("Deserialized flags:", self.flags)
     else
+        warn("Failed to decode flags:", decoded)
+        self.flags = {}
         self:save_flags()
     end
 end
@@ -926,13 +952,13 @@ Options.Tag = TagModule
 
       Library.flags[Settings.Title] = Library.flags[Settings.Title] or ""
 
-
 		Connect(Input.MouseButton1Click, function() 
 			TextBox:CaptureFocus()
 		end)
 
 		Connect(TextBox.FocusLost, function() 
          Library.flags[Settings.Title] = TextBox.Text
+        print("Input updated:", Settings.Title, TextBox.Text)
         Library:save_flags()
 			Settings.Callback(TextBox.Text)
 		end)
@@ -945,6 +971,7 @@ Options.Tag = TagModule
 			Parent = Settings.Tab,
 			Visible = true,
 		})
+        TextBox.Text = Library.flags[Settings.Title]
 	end
 
 	function Options:AddToggle(Settings: { Title: string, Description: string, Default: boolean, Tab: Instance, Callback: any }) 
@@ -969,7 +996,8 @@ Options.Tag = TagModule
 			
 			On.Value = Value
           Library.flags[Settings.Title] = Value
-          Library:save_flags()
+        print("Toggle updated:", Settings.Title, Value)
+        Library:save_flags()
 		end 
 
 		Connect(Toggle.MouseButton1Click, function()
@@ -980,7 +1008,7 @@ Options.Tag = TagModule
 		end)
 
 		Animations:Component(Toggle);
-		Set(Settings.Default);
+		Set(Library.flags[Settings.Title])
 		SetProperty(Title, { Text = Settings.Title });
 		SetProperty(Description, { Text = Settings.Description });
 		SetProperty(Toggle, {
@@ -1122,11 +1150,8 @@ Options.Tag = TagModule
 		local Circle = Fill["Circle"];
 
      Library.flags[Settings.Title] = Library.flags[Settings.Title] or 0
-
-
-		local Active = false
-		local Value = Library.flags[Settings.Title] or 0
-
+    local Active = false
+    local Value = Library.flags[Settings.Title]
 		
 		local SetNumber = function(Number)
 			if Settings.AllowDecimals then
@@ -1151,6 +1176,7 @@ Options.Tag = TagModule
 			Amount.Text = Value
 			Fill.Size = UDim2.fromScale((Number and Number / Settings.MaxValue) or Scale, 1)
          Library.flags[Settings.Title] = Value
+        print("Slider updated:", Settings.Title, Value)
         Library:save_flags()
 			Settings.Callback(Value)
 		end
@@ -1175,6 +1201,7 @@ Options.Tag = TagModule
 		end)
 
 		Fill.Size = UDim2.fromScale(Value, 1);
+        Amount.Text = Value
 		Animations:Component(Slider);
 		SetProperty(Title, { Text = Settings.Title });
 		SetProperty(Description, { Text = Settings.Description });
