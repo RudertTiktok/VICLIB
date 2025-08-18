@@ -464,6 +464,7 @@ local function Color3ToHSB(color)
     }
 end
 
+
 local function GetPerceivedBrightness(color)
     local r, g, b = color.R, color.G, color.B
     return 0.299 * r + 0.587 * g + 0.114 * b
@@ -475,18 +476,19 @@ local function GetTextColorForHSB(color)
 end
 
 local TagModule = {
-    Title = getgenv().namehub or "VicoX",
+    Title = getgenv().namehub or Settings.Title or "VicoX Hub",
     Color = Color3.fromRGB(255, 215, 0),
     TagFrame = nil,
     Height = 22,
+    Padding = 10,
     TextSize = 14,
 }
 
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 0, 0, TagModule.Height) 
-TagFrame.Position = UDim2.new(0, 80, 0.5, 0) 
+TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height)
+TagFrame.Position = UDim2.new(0, 80, 0.5, 0) -- geser kanan dikit
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
@@ -495,7 +497,7 @@ TagFrame.Visible = true
 TagModule.TagFrame = TagFrame
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(1, 0) 
+UICorner.CornerRadius = UDim.new(1, 0) -- lonjong penuh
 UICorner.Parent = TagFrame
 
 local UIStroke = Instance.new("UIStroke")
@@ -504,29 +506,24 @@ UIStroke.Color = Color3.fromRGB(50, 50, 50)
 UIStroke.Transparency = 0.2
 UIStroke.Parent = TagFrame
 
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
+UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
+UIPadding.Parent = TagFrame
+
 local TagTitle = Instance.new("TextLabel")
 TagTitle.BackgroundTransparency = 1
-TagTitle.Size = UDim2.new(1, -12, 1, 0)
-TagTitle.Position = UDim2.new(0, 6, 0, 0)
+TagTitle.Size = UDim2.new(1, -TagModule.Padding * 2, 1, 0)
+TagTitle.Position = UDim2.new(0, TagModule.Padding, 0, 0)
 TagTitle.TextSize = TagModule.TextSize
 TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
 TagTitle.Text = TagModule.Title
 TagTitle.TextColor3 = GetTextColorForHSB(TagModule.Color)
-TagTitle.TextWrapped = false
+TagTitle.TextScaled = false
+TagTitle.TextWrapped = true
+TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
 TagTitle.ZIndex = 3
 TagTitle.Parent = TagFrame
-
-local TextConstraint = Instance.new("UITextSizeConstraint")
-TextConstraint.MaxTextSize = TagModule.TextSize
-TextConstraint.Parent = TagTitle
-
-local function UpdateTagSize()
-    TagTitle.Size = UDim2.new(0, TagTitle.TextBounds.X + 12, 1, 0)
-    TagFrame.Size = UDim2.new(0, TagTitle.TextBounds.X + 24, 0, TagModule.Height)
-end
-
-TagTitle:GetPropertyChangedSignal("Text"):Connect(UpdateTagSize)
-UpdateTagSize()
 
 local TagShadow = Instance.new("ImageLabel")
 TagShadow.Name = "TagShadow"
@@ -575,13 +572,14 @@ end)
 function TagModule:SetTitle(text)
     TagModule.Title = text
     TagTitle.Text = text
-    UpdateTagSize()
+    TagFrame.Size = UDim2.new(0, TagTitle.TextBounds.X + TagModule.Padding * 2, 0, TagModule.Height) -- auto resize
 end
 
 function TagModule:SetColor(color)
     TagModule.Color = color
     Services.Tween:Create(TagFrame, TweenInfo.new(0.1), {BackgroundColor3 = color}):Play()
     Services.Tween:Create(TagTitle, TweenInfo.new(0.1), {TextColor3 = GetTextColorForHSB(color)}):Play()
+
     local function updateGradient(grad)
         grad.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, color),
@@ -590,6 +588,7 @@ function TagModule:SetColor(color)
             ColorSequenceKeypoint.new(1, color)
         })
     end
+
     updateGradient(Gradient1)
     updateGradient(Gradient2)
 end
