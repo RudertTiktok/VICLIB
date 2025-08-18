@@ -478,39 +478,27 @@ end
 local TagModule = {
     Title = getgenv().namehub or Settings.Title or "VicoX Hub",
     Color = Color3.fromRGB(255, 215, 0),
-    TagFrame = nil,
     Height = 22,
     Padding = 10,
     TextSize = 14,
 }
 
+-- FRAME UTAMA
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 100, 0, TagModule.Height)
-TagFrame.Position = UDim2.new(0, 80, 0.5, 0) -- geser kanan dikit
+TagFrame.Size = UDim2.new(0, 120, 0, TagModule.Height)
+TagFrame.Position = UDim2.new(0, 100, 0.5, 0) -- geser kanan
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
 TagFrame.ClipsDescendants = true
-TagFrame.Visible = true
-TagModule.TagFrame = TagFrame
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(1, 0) -- lonjong penuh
+UICorner.CornerRadius = UDim.new(0, 6)
 UICorner.Parent = TagFrame
 
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Thickness = 1
-UIStroke.Color = Color3.fromRGB(50, 50, 50)
-UIStroke.Transparency = 0.2
-UIStroke.Parent = TagFrame
-
-local UIPadding = Instance.new("UIPadding")
-UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
-UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
-UIPadding.Parent = TagFrame
-
+-- TEKS
 local TagTitle = Instance.new("TextLabel")
 TagTitle.BackgroundTransparency = 1
 TagTitle.Size = UDim2.new(1, -TagModule.Padding * 2, 1, 0)
@@ -519,12 +507,11 @@ TagTitle.TextSize = TagModule.TextSize
 TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
 TagTitle.Text = TagModule.Title
 TagTitle.TextColor3 = GetTextColorForHSB(TagModule.Color)
-TagTitle.TextScaled = false
 TagTitle.TextWrapped = true
-TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
 TagTitle.ZIndex = 3
 TagTitle.Parent = TagFrame
 
+-- SHADOW
 local TagShadow = Instance.new("ImageLabel")
 TagShadow.Name = "TagShadow"
 TagShadow.Parent = Top
@@ -536,7 +523,37 @@ TagShadow.Image = "rbxassetid://17183270335"
 TagShadow.ImageTransparency = 0.5
 TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
 TagShadow.ZIndex = 0
-TagShadow.Visible = true
+
+-- SEGITIGA UJUNG TAG
+local TagTriangle = Instance.new("ImageLabel")
+TagTriangle.Name = "TagTriangle"
+TagTriangle.Parent = TagFrame
+TagTriangle.BackgroundTransparency = 1
+TagTriangle.Size = UDim2.new(0, 16, 1, 0)
+TagTriangle.Position = UDim2.new(1, -8, 0, 0)
+TagTriangle.ZIndex = 1
+TagTriangle.Image = "rbxassetid://60310910040" -- segitiga
+TagTriangle.ImageColor3 = TagModule.Color
+TagTriangle.Rotation = 90
+
+-- LUBANG KECIL DI SEGITIGA
+local Hole = Instance.new("Frame")
+Hole.Name = "TagHole"
+Hole.Size = UDim2.new(0, 6, 0, 6)
+Hole.Position = UDim2.new(0.5, -3, 0.5, -3)
+Hole.AnchorPoint = Vector2.new(0.5, 0.5)
+Hole.BackgroundColor3 = Color3.fromRGB(255,255,255)
+Hole.ZIndex = 2
+Hole.Parent = TagTriangle
+
+local HoleCorner = Instance.new("UICorner")
+HoleCorner.CornerRadius = UDim.new(1, 0)
+HoleCorner.Parent = Hole
+
+local HoleStroke = Instance.new("UIStroke")
+HoleStroke.Color = Color3.fromRGB(0,0,0)
+HoleStroke.Thickness = 1
+HoleStroke.Parent = Hole
 
 local function makeGradient()
     local grad = Instance.new("UIGradient")
@@ -560,8 +577,7 @@ end
 local Gradient1 = makeGradient()
 local Gradient2 = makeGradient()
 
-local RunService = game:GetService("RunService")
-RunService.RenderStepped:Connect(function()
+game:GetService("RunService").RenderStepped:Connect(function()
     if TagFrame.Parent then
         local t = (tick() % 2) / 2
         Gradient1.Offset = Vector2.new(t * 2 - 1, 0)
