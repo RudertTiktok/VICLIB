@@ -475,19 +475,18 @@ local function GetTextColorForHSB(color)
 end
 
 local TagModule = {
-    Title = getgenv().namehub or Settings.Title or "VicoX Hub",
+    Title = getgenv().namehub or "VicoX",
     Color = Color3.fromRGB(255, 215, 0),
     TagFrame = nil,
     Height = 22,
-    Padding = 6,
     TextSize = 14,
 }
 
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 90, 0, TagModule.Height)
-TagFrame.Position = UDim2.new(0, 70, 0.5, 0)
+TagFrame.Size = UDim2.new(0, 0, 0, TagModule.Height) 
+TagFrame.Position = UDim2.new(0, 80, 0.5, 0) 
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
@@ -496,7 +495,7 @@ TagFrame.Visible = true
 TagModule.TagFrame = TagFrame
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 6)
+UICorner.CornerRadius = UDim.new(1, 0) 
 UICorner.Parent = TagFrame
 
 local UIStroke = Instance.new("UIStroke")
@@ -505,38 +504,36 @@ UIStroke.Color = Color3.fromRGB(50, 50, 50)
 UIStroke.Transparency = 0.2
 UIStroke.Parent = TagFrame
 
-local UIPadding = Instance.new("UIPadding")
-UIPadding.PaddingLeft = UDim.new(0, TagModule.Padding)
-UIPadding.PaddingRight = UDim.new(0, TagModule.Padding)
-UIPadding.Parent = TagFrame
-
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-UIListLayout.Parent = TagFrame
-
 local TagTitle = Instance.new("TextLabel")
 TagTitle.BackgroundTransparency = 1
-TagTitle.Size = UDim2.new(1, -12, 0, TagModule.Height)
+TagTitle.Size = UDim2.new(1, -12, 1, 0)
 TagTitle.Position = UDim2.new(0, 6, 0, 0)
 TagTitle.TextSize = TagModule.TextSize
 TagTitle.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
 TagTitle.Text = TagModule.Title
 TagTitle.TextColor3 = GetTextColorForHSB(TagModule.Color)
-TagTitle.TextScaled = false
-TagTitle.TextWrapped = true
-TagTitle.TextTruncate = Enum.TextTruncate.AtEnd
+TagTitle.TextWrapped = false
 TagTitle.ZIndex = 3
-TagTitle.Visible = true
-TagTitle.LayoutOrder = 1
 TagTitle.Parent = TagFrame
+
+local TextConstraint = Instance.new("UITextSizeConstraint")
+TextConstraint.MaxTextSize = TagModule.TextSize
+TextConstraint.Parent = TagTitle
+
+local function UpdateTagSize()
+    TagTitle.Size = UDim2.new(0, TagTitle.TextBounds.X + 12, 1, 0)
+    TagFrame.Size = UDim2.new(0, TagTitle.TextBounds.X + 24, 0, TagModule.Height)
+end
+
+TagTitle:GetPropertyChangedSignal("Text"):Connect(UpdateTagSize)
+UpdateTagSize()
 
 local TagShadow = Instance.new("ImageLabel")
 TagShadow.Name = "TagShadow"
 TagShadow.Parent = Top
 TagShadow.BackgroundTransparency = 1
 TagShadow.Position = TagFrame.Position
-TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 16, 0, TagFrame.Size.Y.Offset + 16)
+TagShadow.Size = UDim2.new(0, TagFrame.Size.X.Offset + 20, 0, TagFrame.Size.Y.Offset + 20)
 TagShadow.AnchorPoint = TagFrame.AnchorPoint
 TagShadow.Image = "rbxassetid://17183270335"
 TagShadow.ImageTransparency = 0.5
@@ -578,13 +575,13 @@ end)
 function TagModule:SetTitle(text)
     TagModule.Title = text
     TagTitle.Text = text
+    UpdateTagSize()
 end
 
 function TagModule:SetColor(color)
     TagModule.Color = color
     Services.Tween:Create(TagFrame, TweenInfo.new(0.1), {BackgroundColor3 = color}):Play()
     Services.Tween:Create(TagTitle, TweenInfo.new(0.1), {TextColor3 = GetTextColorForHSB(color)}):Play()
-
     local function updateGradient(grad)
         grad.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, color),
@@ -593,7 +590,6 @@ function TagModule:SetColor(color)
             ColorSequenceKeypoint.new(1, color)
         })
     end
-
     updateGradient(Gradient1)
     updateGradient(Gradient2)
 end
