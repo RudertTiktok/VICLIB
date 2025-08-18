@@ -375,8 +375,6 @@ function Library:save_flags()
     local success, err = pcall(writefile, path, encoded)
     if not success then
         warn("Failed to write flags to file:", err)
-    else
-        print("Flags saved to", path, ":", encoded)
     end
 end
 
@@ -395,8 +393,7 @@ function Library:load_flags()
     end    
     local success, decoded = pcall(HttpService.JSONDecode, HttpService, content)
     if success and decoded then
-        self.flags = decoded
-        print("Deserialized flags:", self.flags)
+        self.flags = decoded        
     else
         warn("Failed to decode flags:", decoded)
         self.flags = {}
@@ -1147,6 +1144,9 @@ function Options:AddSlider(Settings: { Title: string, Description: string, MaxVa
 		local Circle = Fill["Circle"];
     
     Slide.ClipsDescendants = true
+
+     local Active = false
+		local Value = 0
 
     Library.flags[Settings.Title] = Library.flags[Settings.Title] or Settings.Default or 0
     local Value = Library.flags[Settings.Title]
