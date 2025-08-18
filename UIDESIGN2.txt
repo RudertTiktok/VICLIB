@@ -483,12 +483,12 @@ local TagModule = {
     TextSize = 14,
 }
 
--- FRAME UTAMA (lebih pendek, geser ke kiri)
+-- FRAME UTAMA
 local TagFrame = Instance.new("Frame")
 TagFrame.Name = "TagFrame"
 TagFrame.BackgroundColor3 = TagModule.Color
-TagFrame.Size = UDim2.new(0, 90, 0, TagModule.Height) -- dibuat lebih pendek
-TagFrame.Position = UDim2.new(0, 40, 0.5, 0) -- geser kiri
+TagFrame.Size = UDim2.new(0, 95, 0, TagModule.Height) -- lebih pendek
+TagFrame.Position = UDim2.new(0, 55, 0.5, 0) -- geser dikit ke kiri
 TagFrame.AnchorPoint = Vector2.new(0, 0.5)
 TagFrame.Parent = Top
 TagFrame.ZIndex = 2
@@ -511,7 +511,7 @@ TagTitle.TextWrapped = true
 TagTitle.ZIndex = 3
 TagTitle.Parent = TagFrame
 
--- SHADOW di belakang
+-- SHADOW
 local TagShadow = Instance.new("ImageLabel")
 TagShadow.Name = "TagShadow"
 TagShadow.Parent = Top
@@ -524,25 +524,25 @@ TagShadow.ImageTransparency = 0.5
 TagShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
 TagShadow.ZIndex = 0
 
--- SEGITIGA KIRI (potongan tag)
+-- SEGITIGA DI KIRI
 local TagTriangle = Instance.new("ImageLabel")
 TagTriangle.Name = "TagTriangle"
 TagTriangle.Parent = TagFrame
 TagTriangle.BackgroundTransparency = 1
 TagTriangle.Size = UDim2.new(0, 14, 1, 0)
-TagTriangle.Position = UDim2.new(0, -10, 0, 0) -- keluar sedikit di kiri
+TagTriangle.Position = UDim2.new(0, -12, 0, 0) -- nempel ke kiri
 TagTriangle.ZIndex = 1
-TagTriangle.Image = "rbxassetid://60310910040" -- segitiga
+TagTriangle.Image = "rbxassetid://60310910040" -- segitiga Roblox
 TagTriangle.ImageColor3 = TagModule.Color
-TagTriangle.Rotation = 270 -- biar segitiga nunjuk ke kiri
+TagTriangle.Rotation = 270 -- biar nunjuk ke kiri
 
--- LUBANG KECIL di segitiga
+-- LUBANG BULAT (di dalam segitiga)
 local Hole = Instance.new("Frame")
 Hole.Name = "TagHole"
 Hole.Size = UDim2.new(0, 6, 0, 6)
-Hole.Position = UDim2.new(0.5, -3, 0.5, -3)
+Hole.Position = UDim2.new(0.5, 0, 0.5, 0) -- tengah segitiga
 Hole.AnchorPoint = Vector2.new(0.5, 0.5)
-Hole.BackgroundColor3 = Color3.fromRGB(255,255,255)
+Hole.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Hole.ZIndex = 2
 Hole.Parent = TagTriangle
 
@@ -551,7 +551,7 @@ HoleCorner.CornerRadius = UDim.new(1, 0)
 HoleCorner.Parent = Hole
 
 local HoleStroke = Instance.new("UIStroke")
-HoleStroke.Color = Color3.fromRGB(0,0,0)
+HoleStroke.Color = Color3.fromRGB(0, 0, 0)
 HoleStroke.Thickness = 1
 HoleStroke.Parent = Hole
 
@@ -585,6 +585,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
         Gradient2.Offset = Vector2.new(((t + 0.5) % 1) * 2 - 1, 0)
     end
 end)
+
 
 function TagModule:SetTitle(text)
     TagModule.Title = text
