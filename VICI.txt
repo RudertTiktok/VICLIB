@@ -658,7 +658,7 @@ task.spawn(function()
 	end
 
 	-- 6. Outro Fade
-	task.wait(1.5)
+	task.wait(0.5)
 	TweenService:Create(Frame, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
 		BackgroundTransparency = 1
 	}):Play()
@@ -669,11 +669,11 @@ task.spawn(function()
 		TextTransparency = 1
 	}):Play()
 
-	task.wait(5.5)
+	task.wait(2.0)
 	IntroGui:Destroy()
 end)
 
-wait(5.0)
+wait(1.0)
 
 
     
