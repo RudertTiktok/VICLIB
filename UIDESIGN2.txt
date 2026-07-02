@@ -126,7 +126,13 @@ local function updateAllSprings(dt)
         end
 
         local settledX = data.springX:Update(dt)
-        local settledY = data.springY:Update(dt) if data.springY else true
+        local settledY
+
+if data.springY then
+    settledY = data.springY:Update(dt)
+else
+    settledY = true
+end
         local v = data.springX.Value
 
         if data.type == "Position" then
